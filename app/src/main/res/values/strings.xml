@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">metaparser</string>
+    <string name="action_settings">Настройки</string>
+    <string name="activity_game_edittext_hint">Введите команду</string>
+</resources>
