@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.*
 import org.emunix.metaparser.Game
 import org.emunix.metaparser.Metaparser
+import org.emunix.metaparser.Paragraph
 import org.emunix.metaparser.helper.StorageHelper
 
 private const val PREFS_FILENAME = "version_prefs"
@@ -15,8 +16,8 @@ private const val PREF_RESOURCES_LAST_UPDATE = "resources_last_update"
 
 class GameViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val history = arrayListOf<String>()
-    private val historyLiveData = MutableLiveData<ArrayList<String>>()
+    private val history = arrayListOf<Paragraph>()
+    private val historyLiveData = MutableLiveData<ArrayList<Paragraph>>()
     private val showProgressState = MutableLiveData<Boolean>()
 
     private val scope = CoroutineScope(Dispatchers.Main)
@@ -31,8 +32,9 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
             game.init()
 
-            val res = game.load()
-            history.add(res)
+            val response = game.load()
+            val paragraph = Paragraph("", response)
+            history.add(paragraph)
             historyLiveData.value = history
 
             isInit = true
@@ -40,13 +42,13 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun sendTextToGame(text: String) {
-        history.add("> $text")
         val response = game.send(text)
-        history.add(response)
+        val paragraph = Paragraph("> $text", response)
+        history.add(paragraph)
         historyLiveData.value = history
     }
 
-    fun getHistory(): LiveData<ArrayList<String>> = historyLiveData
+    fun getHistory(): LiveData<ArrayList<Paragraph>> = historyLiveData
 
     fun getShowProgressState(): LiveData<Boolean> = showProgressState
 
