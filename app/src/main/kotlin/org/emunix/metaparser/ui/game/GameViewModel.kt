@@ -57,7 +57,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         loadGame()
     }
 
-    fun sendTextToGame(text: String) {
+    fun sendTextToGame(s: String) {
+        val text = s.replace("\"", "")
         val response = game.send(text)
         val paragraph = Paragraph("> $text", response)
         history.add(paragraph)
