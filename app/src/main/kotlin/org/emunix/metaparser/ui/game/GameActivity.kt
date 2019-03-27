@@ -16,6 +16,7 @@ import org.emunix.metaparser.R
 import org.emunix.metaparser.helper.visible
 import org.emunix.metaparser.ui.dialog.NewGameDialog
 import org.emunix.metaparser.ui.dialog.NewGameDialogListener
+import androidx.recyclerview.widget.LinearSmoothScroller
 
 
 class GameActivity : AppCompatActivity() {
@@ -36,6 +37,11 @@ class GameActivity : AppCompatActivity() {
         recyclerView.layoutManager = layoutManager
         listAdapter = GameAdapter()
         recyclerView.adapter = listAdapter
+        val smoothScroller = object : LinearSmoothScroller(this) {
+            override fun getVerticalSnapPreference(): Int {
+                return LinearSmoothScroller.SNAP_TO_START
+            }
+        }
 
         viewModel = ViewModelProviders.of(this).get(GameViewModel::class.java)
 
@@ -48,7 +54,8 @@ class GameActivity : AppCompatActivity() {
         viewModel.getHistory().observe(this, Observer { history ->
             listAdapter.setItems(history)
             listAdapter.notifyDataSetChanged()
-            recyclerView.smoothScrollToPosition(listAdapter.itemCount - 1)
+            smoothScroller.targetPosition = listAdapter.itemCount - 1
+            layoutManager.startSmoothScroll(smoothScroller)
         } )
 
         editText.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
