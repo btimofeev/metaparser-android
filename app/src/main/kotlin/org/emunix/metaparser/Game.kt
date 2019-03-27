@@ -19,6 +19,7 @@ class Game(val context: Context) {
     external fun insteadLoad(): Int
     external fun insteadCommand(cmd: String): String
     external fun insteadDone()
+    external fun isRestart(): Int
 
     private fun command(text: String): String {
         return insteadCommand(text)
@@ -60,5 +61,9 @@ class Game(val context: Context) {
 
     fun done() {
         insteadDone()
+    }
+
+    fun isRestartFromGame(): Boolean {
+        return isRestart() != 0
     }
 }

@@ -1,5 +1,14 @@
 <resources>
     <string name="app_name">metaparser</string>
-    <string name="action_settings">Настройки</string>
+    
+    <string name="action_new_game">Новая игра</string>
+    
     <string name="activity_game_edittext_hint">Введите команду</string>
+    
+    <string name="dialog_new_game_title">Играть с начала?</string>
+    <string name="dialog_new_game_text">Вы действительно хотите начать новую игру? Текущий прогресс будет потерян.</string>
+    <string name="dialog_new_game_positive_button">Да</string>
+    <string name="dialog_new_game_negative_button">Отмена</string>
+
+    <string name="error_delete_autosave_failed">Не удалось удалить autosave</string>
 </resources>

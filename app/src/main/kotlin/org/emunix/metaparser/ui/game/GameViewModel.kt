@@ -6,10 +6,14 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.*
+import org.apache.commons.io.FileUtils
 import org.emunix.metaparser.Game
 import org.emunix.metaparser.Metaparser
 import org.emunix.metaparser.Paragraph
+import org.emunix.metaparser.R
 import org.emunix.metaparser.helper.StorageHelper
+import org.emunix.metaparser.helper.showToast
+import java.io.File
 
 private const val PREFS_FILENAME = "version_prefs"
 private const val PREF_RESOURCES_LAST_UPDATE = "resources_last_update"
@@ -31,14 +35,26 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             showProgressState.value = false
 
             game.init()
-
-            val response = game.load()
-            val paragraph = Paragraph("", response)
-            history.add(paragraph)
-            historyLiveData.value = history
+            loadGame()
 
             isInit = true
         }
+    }
+
+    private fun loadGame() {
+        val response = game.load()
+        val paragraph = Paragraph("", response)
+        history.add(paragraph)
+        historyLiveData.value = history
+    }
+
+    fun restartGame() {
+        if (!FileUtils.deleteQuietly(File(StorageHelper(getApplication()).getAppFilesDirectory(), "autosave")))
+            getApplication<Metaparser>().showToast(getApplication<Metaparser>().getString(R.string.error_delete_autosave_failed))
+        history.clear()
+        game.done()
+        game.init()
+        loadGame()
     }
 
     fun sendTextToGame(text: String) {
@@ -46,6 +62,9 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         val paragraph = Paragraph("> $text", response)
         history.add(paragraph)
         historyLiveData.value = history
+
+        if (game.isRestartFromGame())
+            restartGame()
     }
 
     fun getHistory(): LiveData<ArrayList<Paragraph>> = historyLiveData
@@ -71,6 +90,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
                 StorageHelper(context).getGameDirectory().deleteRecursively()
                 StorageHelper(context).copyAsset("game", StorageHelper(context).getAppFilesDirectory())
+
+                StorageHelper(context).copyAsset("restart.lua", StorageHelper(context).getSteadDirectory())
 
                 saveCurrentAppVersion(Metaparser().getVersionCode(context))
             }

@@ -6,19 +6,23 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
-import org.emunix.metaparser.helper.visible
 import org.emunix.metaparser.R
+import org.emunix.metaparser.helper.visible
+import org.emunix.metaparser.ui.dialog.NewGameDialog
+import org.emunix.metaparser.ui.dialog.NewGameDialogListener
 
 
 class GameActivity : AppCompatActivity() {
 
     private lateinit var listAdapter: GameAdapter
     private lateinit var viewModel: GameViewModel
+    private lateinit var newGameDialogListener: NewGameDialogListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +62,22 @@ class GameActivity : AppCompatActivity() {
         })
 
         viewModel.init()
+
+        newGameDialogListener = object : NewGameDialogListener{
+            override fun onDialogPositiveClick(dialog: DialogFragment) {
+                viewModel.restartGame()
+            }
+
+            override fun onDialogNegativeClick(dialog: DialogFragment) {
+                dialog.dismiss()
+            }
+        }
+
+        if (savedInstanceState != null) {
+            // after changing screen orientation the listener is not set
+            val newGameDialog = supportFragmentManager.findFragmentByTag("new_game_dialog") as NewGameDialog?
+            newGameDialog?.setListener(newGameDialogListener)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -67,7 +87,11 @@ class GameActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId) {
-            R.id.action_settings -> true
+            R.id.action_new_game -> {
+                val newGameDialog = NewGameDialog.newInstance(newGameDialogListener)
+                newGameDialog.show(supportFragmentManager, "new_game_dialog")
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
