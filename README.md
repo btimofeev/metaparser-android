@@ -4,6 +4,10 @@
 
 "Парсерная игра" означает, что ваша игра должна быть написана с использованием модуля [МЕТАПАРСЕР3](https://github.com/instead-hub/stead3-modules/tree/master/metaparser).
 
+Ваша игра будет выглядеть примерно так:
+
+<img src="/media/screenshot_1.png" width="350"> <img src="/media/screenshot_2.png" width="350">
+
 ## Как упаковать свою игру в APK-файл
 
 Для начала вам необходимо клонировать репозиторий, либо скачать последний релиз со страницы [Releases](https://github.com/btimofeev/metaparser-android/releases) и распаковать куда-нибудь.
