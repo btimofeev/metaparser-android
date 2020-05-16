@@ -4,6 +4,6 @@
         app:fontStyle="normal"
         app:font="@font/literata_regular" />
     <font
-        app:fontStyle="normal"
+        app:fontWeight="700"
         app:font="@font/literata_bold" />
 </font-family>
