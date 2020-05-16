@@ -34,7 +34,7 @@ class StorageHelper(val context: Context) {
     fun copyAsset(name: String, toPath: File) {
         val assetManager = context.assets
         try {
-            val assets = assetManager.list(name)
+            val assets = assetManager.list(name) ?: throw IOException("Assets not found")
 
             val dir = File(toPath, name)
             if (assets.isEmpty()) {
