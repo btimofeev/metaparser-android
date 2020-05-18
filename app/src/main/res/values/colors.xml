@@ -9,4 +9,6 @@
 
     <color name="commandTextColor">#000000</color>     <!--цвет текста введенной команды-->
     <color name="textColor">#000000</color>            <!--цвет текта который приходит как ответ метапарсера на комманду-->
+
+    <color name="enterButtonTint">#D81B60</color>      <!--цвет значка на кнопке enter-->
 </resources>

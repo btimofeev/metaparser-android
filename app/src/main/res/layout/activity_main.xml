@@ -63,14 +63,31 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/text_margin_start"
-        android:layout_marginEnd="@dimen/text_margin_end"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:ems="10"
         android:hint="@string/activity_game_edittext_hint"
+        android:imeOptions="actionSend"
         android:inputType="textCapSentences"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/enterButton"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/enterButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/send"
+        android:tint="@color/enterButtonTint"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/editText"
+        app:layout_constraintTop_toBottomOf="@+id/coordinator"
+        app:layout_constraintVertical_bias="0.50" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

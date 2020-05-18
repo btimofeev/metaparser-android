@@ -10,13 +10,13 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 import org.emunix.metaparser.R
 import org.emunix.metaparser.helper.visible
 import org.emunix.metaparser.ui.dialog.NewGameDialog
 import org.emunix.metaparser.ui.dialog.NewGameDialogListener
-import androidx.recyclerview.widget.LinearSmoothScroller
 
 
 class GameActivity : AppCompatActivity() {
@@ -49,6 +49,7 @@ class GameActivity : AppCompatActivity() {
             progressBar.visible(showProgressState)
             recyclerView.visible(!showProgressState)
             editText.visible(!showProgressState)
+            enterButton.visible(!showProgressState)
         })
 
         viewModel.getHistory().observe(this, Observer { history ->
@@ -78,6 +79,11 @@ class GameActivity : AppCompatActivity() {
             override fun onDialogNegativeClick(dialog: DialogFragment) {
                 dialog.dismiss()
             }
+        }
+
+        enterButton.setOnClickListener {
+            editText.dispatchKeyEvent(KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER, 0))
+            editText.dispatchKeyEvent(KeyEvent(0, 0, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER, 0))
         }
 
         if (savedInstanceState != null) {
