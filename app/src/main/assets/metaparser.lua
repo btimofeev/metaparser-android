@@ -18,3 +18,4 @@ iface.center = html_tag('center')
 iface.right = html_tag('right')
 
 instead.restart = instead_restart
+instead.tiny = true
