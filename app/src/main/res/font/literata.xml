@@ -4,6 +4,13 @@
         app:fontStyle="normal"
         app:font="@font/literata_regular" />
     <font
+        app:fontStyle="italic"
+        app:font="@font/literata_italic" />
+    <font
         app:fontWeight="700"
         app:font="@font/literata_bold" />
+    <font
+        app:fontWeight="700"
+        app:fontStyle="italic"
+        app:font="@font/literata_bold_italic" />
 </font-family>
