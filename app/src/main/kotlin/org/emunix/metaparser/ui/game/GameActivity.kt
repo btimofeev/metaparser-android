@@ -8,7 +8,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -39,11 +39,11 @@ class GameActivity : AppCompatActivity() {
         recyclerView.adapter = listAdapter
         val smoothScroller = object : LinearSmoothScroller(this) {
             override fun getVerticalSnapPreference(): Int {
-                return LinearSmoothScroller.SNAP_TO_START
+                return SNAP_TO_START
             }
         }
 
-        viewModel = ViewModelProviders.of(this).get(GameViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(GameViewModel::class.java)
 
         viewModel.getShowProgressState().observe(this, Observer { showProgressState ->
             progressBar.visible(showProgressState)
