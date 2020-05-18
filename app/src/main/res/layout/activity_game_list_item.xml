@@ -15,6 +15,7 @@
         android:lineSpacingMultiplier="1.3"
         android:textAppearance="@android:style/TextAppearance.Material.Subhead"
         android:textStyle="bold"
+        android:textColor="@color/commandTextColor"
         app:layout_constraintBottom_toTopOf="@id/text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,6 +29,7 @@
         android:fontFamily="@font/literata"
         android:lineSpacingMultiplier="1.3"
         android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+        android:textColor="@color/textColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

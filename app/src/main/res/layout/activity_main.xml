@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/editTextColor"
     tools:context=".ui.game.GameActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -41,6 +42,7 @@
             android:fitsSystemWindows="false"
             android:scrollbars="vertical"
             android:visibility="gone"
+            android:background="@color/backgroundColor"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
