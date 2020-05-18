@@ -60,7 +60,7 @@ class StorageHelper(val context: Context) {
                 getGameDirectory().deleteRecursively()
                 copyAsset("game", getAppFilesDirectory())
 
-                copyAsset("restart.lua", getSteadDirectory())
+                copyAsset("metaparser.lua", getSteadDirectory())
 
                 AppVersionHelper(context).saveCurrentAppVersion(AppVersionHelper(context).getVersionCode())
             }

@@ -24,7 +24,7 @@ static int tiny_init(void)
 	rc = instead_loadfile("stead/tiny3.lua");
 	if (rc)
 		return rc;
-    rc = instead_loadfile("stead/restart.lua");
+    rc = instead_loadfile("stead/metaparser.lua");
     if (rc)
         return rc;
 	return 0;

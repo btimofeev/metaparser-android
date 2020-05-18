@@ -4,13 +4,16 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.apache.commons.io.FileUtils
 import org.emunix.metaparser.Game
 import org.emunix.metaparser.Metaparser
 import org.emunix.metaparser.Paragraph
 import org.emunix.metaparser.R
 import org.emunix.metaparser.helper.StorageHelper
+import org.emunix.metaparser.helper.TagParser
 import org.emunix.metaparser.helper.showToast
 import java.io.File
 
@@ -40,7 +43,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun loadGame() {
         val response = game.load()
-        val paragraph = Paragraph("", response)
+        val spanned = TagParser.parse(response)
+        val paragraph = Paragraph("", spanned)
         history.add(paragraph)
         historyLiveData.value = history
     }
@@ -61,7 +65,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     fun sendTextToGame(s: String) {
         val text = s.replace("\"", "")
         val response = game.send(text)
-        val paragraph = Paragraph("> $text", response)
+        val spanned = TagParser.parse(response)
+        val paragraph = Paragraph("> $text", spanned)
         history.add(paragraph)
         historyLiveData.value = history
 

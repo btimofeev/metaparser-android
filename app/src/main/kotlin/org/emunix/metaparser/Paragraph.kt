@@ -1,3 +1,5 @@
 package org.emunix.metaparser
 
-data class Paragraph(val command: String, val response: String)
+import android.text.Spanned
+
+data class Paragraph(val command: String, val response: Spanned)
