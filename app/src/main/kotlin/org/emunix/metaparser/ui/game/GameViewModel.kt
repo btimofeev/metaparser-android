@@ -54,7 +54,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun restartGame() {
-        if (!FileUtils.deleteQuietly(File(StorageHelper(getApplication()).getAppFilesDirectory(), "autosave")))
+        val autosave = File(StorageHelper(getApplication()).getAppFilesDirectory(), "autosave")
+        if (autosave.exists() && !FileUtils.deleteQuietly(autosave))
             getApplication<Metaparser>().showToast(getApplication<Metaparser>().getString(R.string.error_delete_autosave_failed))
         history.clear()
         game.done()
