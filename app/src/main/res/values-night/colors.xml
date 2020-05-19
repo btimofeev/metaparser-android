@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#1D1E1E</color>         <!--цвет тулбара с названием игры и меню-->
+    <color name="colorPrimaryDark">#121313</color>     <!--цвет статусбара: часы, уведомления-->
+    <color name="colorSecondary">#FFAB91</color>       <!--цвет курсора, выделения текста, индикатора прогресса-->
+
+    <color name="colorBackground">#212121</color>      <!--цвет фона-->
+    <color name="colorOnBackground">#FFFFFF</color>    <!--цвет основного текста-->
+    <color name="colorCommandText">#B7B7B7</color>     <!--цвет текста введенной команды-->
+
+    <color name="colorSurface">#121212</color>         <!--цвет фона для диалога-->
+    <color name="colorOnSurface">#FFFFFF</color>       <!--цвет текста для диалога-->
+
+    <color name="enterButtonTint">#FFAB91</color>      <!--цвет значка на кнопке enter-->
+</resources>

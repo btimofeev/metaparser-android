@@ -54,7 +54,7 @@ end
 
 ### Измените цвета
 
-Изменить цвет текста, фона, тулбара, статусбара и поля для ввода текста можно в файле `app/src/main/res/values/colors.xml`
+Изменить цветовую гамму приложения можно в файле `app/src/main/res/values/colors.xml` для светлой темы и в `app/src/main/res/values-night/colors.xml` для тёмной темы.
 
 ### Установите Android SDK и NDK
 

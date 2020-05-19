@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.preference.PreferenceManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -14,6 +15,7 @@ import org.emunix.metaparser.Paragraph
 import org.emunix.metaparser.R
 import org.emunix.metaparser.helper.StorageHelper
 import org.emunix.metaparser.helper.TagParser
+import org.emunix.metaparser.helper.ThemeHelper
 import org.emunix.metaparser.helper.showToast
 import java.io.File
 
@@ -78,6 +80,17 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     fun getHistory(): LiveData<ArrayList<Paragraph>> = historyLiveData
 
     fun getShowProgressState(): LiveData<Boolean> = showProgressState
+
+    fun getAppTheme(): String {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication())
+        return sharedPreferences.getString("app_theme", ThemeHelper.DEFAULT_MODE) ?: ThemeHelper.DEFAULT_MODE
+    }
+
+    fun setAppTheme(theme: String) {
+        ThemeHelper.applyTheme(theme)
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication())
+        sharedPreferences.edit().putString("app_theme", theme).apply()
+    }
 
     override fun onCleared() {
         super.onCleared()

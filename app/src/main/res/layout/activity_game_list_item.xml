@@ -6,7 +6,7 @@
     android:layout_marginStart="@dimen/text_margin_start"
     android:layout_marginEnd="@dimen/text_margin_end">
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/command"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,13 +15,13 @@
         android:lineSpacingMultiplier="1.3"
         android:textAppearance="@android:style/TextAppearance.Material.Subhead"
         android:textStyle="bold"
-        android:textColor="@color/commandTextColor"
+        android:textColor="@color/colorCommandText"
         app:layout_constraintBottom_toTopOf="@id/text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
         android:fontFamily="@font/literata"
         android:lineSpacingMultiplier="1.3"
         android:textAppearance="@android:style/TextAppearance.Material.Subhead"
-        android:textColor="@color/textColor"
+        android:textColor="?attr/colorOnBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

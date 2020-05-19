@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>         <!--цвет тулбара с названием игры и меню-->
-    <color name="colorPrimaryDark">#00574B</color>     <!--цвет статусбара: часы, уведомления-->
-    <color name="colorAccent">#D81B60</color>          <!--цвет курсора, выделения текста, индикатора прогресса, кнопок в диалогах-->
+    <color name="colorPrimary">#009688</color>         <!--цвет тулбара с названием игры и меню-->
+    <color name="colorPrimaryDark">#00796B</color>     <!--цвет статусбара: часы, уведомления-->
+    <color name="colorSecondary">#E91E63</color>       <!--цвет курсора, выделения текста, индикатора прогресса, кнопок в диалогах-->
 
-    <color name="backgroundColor">#FFFFFF</color>      <!--цвет фона для текста-->
-    <color name="editTextColor">#FFFFFF</color>        <!--цвет фона для ввода текста-->
+    <color name="colorBackground">#FFFFFF</color>      <!--цвет фона-->
+    <color name="colorOnBackground">#000000</color>    <!--цвет основного текста-->
+    <color name="colorCommandText">#009688</color>     <!--цвет текста введенной команды-->
 
-    <color name="commandTextColor">#000000</color>     <!--цвет текста введенной команды-->
-    <color name="textColor">#000000</color>            <!--цвет текта который приходит как ответ метапарсера на комманду-->
+    <color name="colorSurface">#FFFFFF</color>         <!--цвет фона для диалога-->
+    <color name="colorOnSurface">#050505</color>       <!--цвет текста для диалога-->
 
-    <color name="enterButtonTint">#D81B60</color>      <!--цвет значка на кнопке enter-->
+    <color name="enterButtonTint">#E91E63</color>      <!--цвет значка на кнопке enter-->
 </resources>

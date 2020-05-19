@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 import org.emunix.metaparser.R
+import org.emunix.metaparser.helper.ThemeHelper
 import org.emunix.metaparser.helper.visible
 import org.emunix.metaparser.ui.dialog.NewGameDialog
 import org.emunix.metaparser.ui.dialog.NewGameDialogListener
@@ -63,7 +64,7 @@ class GameActivity : AppCompatActivity() {
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
                 val text = editText.text.toString()
                 viewModel.sendTextToGame(text)
-                editText.text.clear()
+                editText.text?.clear()
                 return@OnKeyListener true
             }
             false
@@ -95,6 +96,12 @@ class GameActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
+
+        when (viewModel.getAppTheme()) {
+            ThemeHelper.LIGHT_MODE -> menu.findItem(R.id.theme_light).isChecked = true
+            ThemeHelper.DARK_MODE -> menu.findItem(R.id.theme_dark).isChecked = true
+            ThemeHelper.DEFAULT_MODE -> menu.findItem(R.id.theme_default).isChecked = true
+        }
         return true
     }
 
@@ -103,6 +110,21 @@ class GameActivity : AppCompatActivity() {
             R.id.action_new_game -> {
                 val newGameDialog = NewGameDialog.newInstance(newGameDialogListener)
                 newGameDialog.show(supportFragmentManager, "new_game_dialog")
+                true
+            }
+            R.id.theme_light -> {
+                viewModel.setAppTheme(ThemeHelper.LIGHT_MODE)
+                item.isChecked = true
+                true
+            }
+            R.id.theme_dark -> {
+                viewModel.setAppTheme(ThemeHelper.DARK_MODE)
+                item.isChecked = true
+                true
+            }
+            R.id.theme_default -> {
+                viewModel.setAppTheme(ThemeHelper.DEFAULT_MODE)
+                item.isChecked = true
                 true
             }
             else -> super.onOptionsItemSelected(item)

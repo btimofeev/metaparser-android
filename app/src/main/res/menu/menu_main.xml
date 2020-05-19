@@ -6,4 +6,24 @@
         android:title="@string/action_new_game"
         android:orderInCategory="100"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/theme"
+        android:title="@string/action_theme"
+        android:orderInCategory="200"
+        app:showAsAction="never">
+
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/theme_light"
+                    android:title="@string/action_theme_light" />
+                <item
+                    android:id="@+id/theme_dark"
+                    android:title="@string/action_theme_dark" />
+                <item
+                    android:id="@+id/theme_default"
+                    android:title="@string/action_theme_default" />
+            </group>
+        </menu>
+    </item>
 </menu>

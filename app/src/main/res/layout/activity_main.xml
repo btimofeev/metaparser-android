@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/editTextColor"
+    android:background="?android:attr/colorBackground"
     tools:context=".ui.game.GameActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -42,12 +42,11 @@
             android:fitsSystemWindows="false"
             android:scrollbars="vertical"
             android:visibility="gone"
-            android:background="@color/backgroundColor"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <ProgressBar
+    <androidx.core.widget.ContentLoadingProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
@@ -58,32 +57,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/editText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/text_margin_start"
-        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:ems="10"
         android:hint="@string/activity_game_edittext_hint"
         android:imeOptions="actionSend"
         android:inputType="textCapSentences"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/enterButton"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/enterButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@android:color/transparent"
-        android:src="@drawable/send"
-        android:tint="@color/enterButtonTint"
-        android:visibility="gone"
+        app:icon="@drawable/send"
+        app:iconPadding="0dp"
+        app:iconGravity="textStart"
+        app:iconTint="@color/enterButtonTint"
+        android:visibility="visible"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/editText"
