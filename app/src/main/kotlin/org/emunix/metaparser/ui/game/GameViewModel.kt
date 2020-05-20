@@ -5,9 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.apache.commons.io.FileUtils
 import org.emunix.metaparser.Game
 import org.emunix.metaparser.Metaparser
@@ -43,16 +41,35 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    private fun loadGame() {
-        val response = game.load()
-        val spanned = TagParser.parse(response)
-        val paragraph = Paragraph("", spanned)
+    private fun showTextBlock(command: String, text: String) {
+        val spanned = TagParser.parse(text)
+        val paragraph = Paragraph(command, spanned)
         history.add(paragraph)
         historyLiveData.value = history
     }
 
-    fun saveGame() {
-        game.save()
+    private fun loadGame() {
+        val response = game.load()
+        showTextBlock("", response)
+    }
+
+    fun saveState(name: String? = null) {
+        if (name.isNullOrBlank())
+            game.save()
+        else
+            game.save(name)
+    }
+
+    fun loadState(name: String) {
+        history.clear()
+        game.done()
+        game.init()
+        val response = game.load(name)
+        showTextBlock("", response)
+    }
+
+    fun getSaveStates(): HashMap<Int, String?> = runBlocking {
+        return@runBlocking StorageHelper(getApplication()).getSaveStateInfo()
     }
 
     fun restartGame() {
@@ -68,10 +85,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     fun sendTextToGame(s: String) {
         val text = s.replace("\"", "")
         val response = game.send(text)
-        val spanned = TagParser.parse(response)
-        val paragraph = Paragraph("> $text", spanned)
-        history.add(paragraph)
-        historyLiveData.value = history
+        showTextBlock("> $text", response)
 
         if (game.isRestartFromGame())
             restartGame()

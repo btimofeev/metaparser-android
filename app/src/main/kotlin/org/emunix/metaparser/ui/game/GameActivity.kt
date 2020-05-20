@@ -105,34 +105,83 @@ class GameActivity : AppCompatActivity() {
         return true
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        val saves = viewModel.getSaveStates()
+        for (save in saves) {
+            val text = save.value ?: getString(R.string.action_text_empty_slot)
+            when (save.key) {
+                1 -> {
+                    menu?.findItem(R.id.action_save_game_1)?.title = "1. $text"
+                    menu?.findItem(R.id.action_load_game_1)?.run {
+                        title = "1. $text"
+                        isEnabled = save.value != null
+                    }
+                }
+                2 -> {
+                    menu?.findItem(R.id.action_save_game_2)?.title = "2. $text"
+                    menu?.findItem(R.id.action_load_game_2)?.run {
+                        title = "2. $text"
+                        isEnabled = save.value != null
+                    }
+                }
+                3 -> {
+                    menu?.findItem(R.id.action_save_game_3)?.title = "3. $text"
+                    menu?.findItem(R.id.action_load_game_3)?.run {
+                        title = "3. $text"
+                        isEnabled = save.value != null
+                    }
+                }
+            }
+        }
+        return true
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId) {
+        when(item.itemId) {
             R.id.action_new_game -> {
                 val newGameDialog = NewGameDialog.newInstance(newGameDialogListener)
                 newGameDialog.show(supportFragmentManager, "new_game_dialog")
-                true
+            }
+            R.id.action_save_game_1 -> {
+                viewModel.saveState("1.sav")
+                invalidateOptionsMenu()
+            }
+            R.id.action_save_game_2 -> {
+                viewModel.saveState("2.sav")
+                invalidateOptionsMenu()
+            }
+            R.id.action_save_game_3 -> {
+                viewModel.saveState("3.sav")
+                invalidateOptionsMenu()
+            }
+            R.id.action_load_game_1 -> {
+                viewModel.loadState("1.sav")
+            }
+            R.id.action_load_game_2 -> {
+                viewModel.loadState("2.sav")
+            }
+            R.id.action_load_game_3 -> {
+                viewModel.loadState("3.sav")
             }
             R.id.theme_light -> {
                 viewModel.setAppTheme(ThemeHelper.LIGHT_MODE)
                 item.isChecked = true
-                true
             }
             R.id.theme_dark -> {
                 viewModel.setAppTheme(ThemeHelper.DARK_MODE)
                 item.isChecked = true
-                true
             }
             R.id.theme_default -> {
                 viewModel.setAppTheme(ThemeHelper.DEFAULT_MODE)
                 item.isChecked = true
-                true
             }
-            else -> super.onOptionsItemSelected(item)
+            else -> return super.onOptionsItemSelected(item)
         }
+        return true
     }
 
     override fun onPause() {
         super.onPause()
-        viewModel.saveGame()
+        viewModel.saveState()
     }
 }

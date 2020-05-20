@@ -9,6 +9,9 @@ import org.apache.commons.io.FileUtils
 import org.emunix.metaparser.BuildConfig
 import java.io.File
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.HashMap
 
 class StorageHelper(val context: Context) {
 
@@ -65,5 +68,22 @@ class StorageHelper(val context: Context) {
                 AppVersionHelper(context).saveCurrentAppVersion(AppVersionHelper(context).getVersionCode())
             }
         }
+    }
+
+    suspend fun getSaveStateInfo(): HashMap<Int, String?> {
+        val saves = HashMap<Int, String?>()
+        withContext(Dispatchers.IO) {
+            for (i in 1..3) {
+                val file = File(getAppFilesDirectory(), "$i.sav")
+                if (file.exists()) {
+                    val timestamp = file.lastModified()
+                    val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm")
+                    saves[i] = dateFormat.format(Date(timestamp))
+                } else {
+                    saves[i] = null
+                }
+            }
+        }
+        return saves
     }
 }

@@ -50,6 +50,10 @@ class Game(val context: Context) {
         return command("save ../autosave")
     }
 
+    fun save(name: String): String {
+        return command("save ../$name")
+    }
+
     fun load(): String {
         val autosave = File(StorageHelper(context).getAppFilesDirectory(), "autosave")
         return if (autosave.exists()) {
@@ -57,6 +61,10 @@ class Game(val context: Context) {
         } else {
             command("look")
         }
+    }
+
+    fun load(name: String): String {
+        return command("load ../$name")
     }
 
     fun done() {

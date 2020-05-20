@@ -6,6 +6,51 @@
         android:title="@string/action_new_game"
         android:orderInCategory="100"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_save_game"
+        android:title="@string/action_save_game"
+        android:orderInCategory="120"
+        app:showAsAction="never">
+
+        <menu>
+            <item
+                android:id="@+id/action_save_game_1"
+                android:title="@string/action_text_empty_slot"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/action_save_game_2"
+                android:title="@string/action_text_empty_slot"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/action_save_game_3"
+                android:title="@string/action_text_empty_slot"
+                app:showAsAction="never" />
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/action_load_game"
+        android:title="@string/action_load_game"
+        android:orderInCategory="140"
+        app:showAsAction="never">
+
+        <menu>
+            <item
+                android:id="@+id/action_load_game_1"
+                android:title="@string/action_text_empty_slot"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/action_load_game_2"
+                android:title="@string/action_text_empty_slot"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/action_load_game_3"
+                android:title="@string/action_text_empty_slot"
+                app:showAsAction="never" />
+        </menu>
+    </item>
+
     <item
         android:id="@+id/theme"
         android:title="@string/action_theme"
