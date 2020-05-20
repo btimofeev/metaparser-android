@@ -19,3 +19,11 @@ iface.right = html_tag('right')
 
 instead.restart = instead_restart
 instead.tiny = true
+
+std.mod_start(function()
+	local mp = std.ref '@metaparser'
+	if mp then
+		mp.msg.CUTSCENE_HELP = "Для продолжения нажмите {$fmt b|ввод} или введите {$fmt em|дальше}."
+		mp.msg.CUTSCENE_MORE = "^Для продолжения нажмите {$fmt b|ввод} или введите {$fmt em|дальше}."
+	end
+end)
