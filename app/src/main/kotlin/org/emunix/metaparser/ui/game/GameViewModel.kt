@@ -8,14 +8,12 @@ import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
 import kotlinx.coroutines.*
 import org.apache.commons.io.FileUtils
-import org.emunix.metaparser.Game
-import org.emunix.metaparser.Metaparser
-import org.emunix.metaparser.Paragraph
-import org.emunix.metaparser.R
+import org.emunix.metaparser.*
 import org.emunix.metaparser.helper.StorageHelper
 import org.emunix.metaparser.helper.TagParser
 import org.emunix.metaparser.helper.ThemeHelper
 import org.emunix.metaparser.helper.showToast
+import timber.log.Timber
 import java.io.File
 
 
@@ -24,6 +22,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     private val history = arrayListOf<Paragraph>()
     private val historyLiveData = MutableLiveData<ArrayList<Paragraph>>()
     private val showProgressState = MutableLiveData<Boolean>()
+    private val showCriticalError = MutableLiveData<String>()
 
     private var game: Game = Game(getApplication())
     private var isInit = false
@@ -34,10 +33,14 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             StorageHelper(getApplication()).copyResources()
             showProgressState.value = false
 
-            game.init()
-            loadGame()
-
-            isInit = true
+            try {
+                game.init()
+                loadGame()
+                isInit = true
+            } catch (e: MetaparserException) {
+                showCriticalError.value = e.message
+                Timber.e(e)
+            }
         }
     }
 
@@ -94,6 +97,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     fun getHistory(): LiveData<ArrayList<Paragraph>> = historyLiveData
 
     fun getShowProgressState(): LiveData<Boolean> = showProgressState
+
+    fun getShowCriticalError(): LiveData<String> = showCriticalError
 
     fun getAppTheme(): String {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication())

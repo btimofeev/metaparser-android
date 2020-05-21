@@ -18,5 +18,6 @@
     <string name="dialog_new_game_positive_button">Да</string>
     <string name="dialog_new_game_negative_button">Отмена</string>
 
+    <string name="critical_error">Упс..\n\nПроизошла критическая ошибка, приложение остановлено.\n\n%1$s</string>
     <string name="error_delete_autosave_failed">Не удалось удалить autosave</string>
 </resources>

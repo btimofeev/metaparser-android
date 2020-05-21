@@ -77,8 +77,12 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'androidx.preference:preference:1.1.1'
+
     implementation 'commons-io:commons-io:2.5'  // 2.6 crashes the application on Android below 8, because java.nio.file is not available in these versions
     implementation 'org.ccil.cowan.tagsoup:tagsoup:1.2.1'
+
+    implementation 'com.jakewharton.timber:timber:4.7.1'
+
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

@@ -51,6 +51,16 @@ class GameActivity : AppCompatActivity() {
             recyclerView.visible(!showProgressState)
             editText.visible(!showProgressState)
             enterButton.visible(!showProgressState)
+            errorMessage.visible(false)
+        })
+
+        viewModel.getShowCriticalError().observe(this, Observer { message ->
+            errorMessage.text = getString(R.string.critical_error, message)
+            progressBar.visible(false)
+            recyclerView.visible(false)
+            editText.visible(false)
+            enterButton.visible(false)
+            errorMessage.visible(true)
         })
 
         viewModel.getHistory().observe(this, Observer { history ->

@@ -4,7 +4,7 @@ import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.emunix.metaparser.helper.StorageHelper
-import org.emunix.metaparser.helper.showToast
+import timber.log.Timber
 import java.io.File
 
 class Game(val context: Context) {
@@ -28,20 +28,21 @@ class Game(val context: Context) {
     }
 
     suspend fun init() = withContext(Dispatchers.IO) {
-        if (registerExtension() != 0)
-            context.showToast("Can't register tiny extension")
+        val extRet = registerExtension()
+        if (extRet != 0)
+            throw MetaparserException("instead_extension() return code: $extRet")
 
         val dir = StorageHelper(context).getAppFilesDirectory().absolutePath
         val gameDir = "$dir/game"
-        if (insteadInit(dir, gameDir) != 0) {
-            context.showToast("Can not init game")
-            return@withContext
-        }
+        val initRet = insteadInit(dir, gameDir)
+        if (initRet != 0)
+            throw MetaparserException("instead_init() return code: $initRet")
 
-        if (insteadLoad() != 0) {
-            context.showToast("Can not load game")
-            return@withContext
-        }
+        val loadRet = insteadLoad()
+        if (loadRet != 0)
+            throw MetaparserException("instead_load() return code: $loadRet")
+
+        Timber.d("instead init successful")
     }
 
     suspend fun send(text: String): String = withContext(Dispatchers.IO) {
