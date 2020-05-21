@@ -18,6 +18,7 @@ class Game(val context: Context) {
 
     external fun registerExtension(): Int
     external fun insteadInit(directory: String, gameDir: String): Int
+    external fun insteadErr(): String
     external fun insteadLoad(): Int
     external fun insteadCommand(cmd: String): String
     external fun insteadDone()
@@ -38,9 +39,11 @@ class Game(val context: Context) {
         if (initRet != 0)
             throw MetaparserException("instead_init() return code: $initRet")
 
-        val loadRet = insteadLoad()
-        if (loadRet != 0)
-            throw MetaparserException("instead_load() return code: $loadRet")
+        if (insteadLoad() != 0) {
+            val err = insteadErr()
+            Timber.e(err)
+            throw MetaparserException("instead_load(): $err")
+        }
 
         Timber.d("instead init successful")
     }

@@ -50,11 +50,18 @@ JNIEXPORT jint JNICALL Java_org_emunix_metaparser_Game_insteadInit(JNIEnv* env, 
     return ret;
 }
 
+JNIEXPORT jstring JNICALL Java_org_emunix_metaparser_Game_insteadErr(JNIEnv* env, jobject instance)
+{
+    char* response = (char *) instead_err();
+    jstring ret = (*env)->NewStringUTF(env, response);
+    return ret;
+}
+
 JNIEXPORT jstring JNICALL Java_org_emunix_metaparser_Game_insteadCommand(JNIEnv* env, jobject instance, jstring command)
 {
     int rc;
     const char *cmd = (*env)->GetStringUTFChars(env, command, NULL);
-    char* response = instead_cmd(cmd, &rc);
+    char* response = instead_cmd((char *) cmd, &rc);
     jstring ret = (*env)->NewStringUTF(env, response);
     (*env)->ReleaseStringUTFChars(env, command, cmd);
     return ret;
