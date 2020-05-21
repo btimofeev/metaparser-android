@@ -1,8 +1,10 @@
 package org.emunix.metaparser
 
 import android.content.Context
-import org.emunix.metaparser.helper.showToast
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.emunix.metaparser.helper.StorageHelper
+import org.emunix.metaparser.helper.showToast
 import java.io.File
 
 class Game(val context: Context) {
@@ -25,7 +27,7 @@ class Game(val context: Context) {
         return insteadCommand(text)
     }
 
-    fun init() {
+    suspend fun init() = withContext(Dispatchers.IO) {
         if (registerExtension() != 0)
             context.showToast("Can't register tiny extension")
 
@@ -33,45 +35,45 @@ class Game(val context: Context) {
         val gameDir = "$dir/game"
         if (insteadInit(dir, gameDir) != 0) {
             context.showToast("Can not init game")
-            return
+            return@withContext
         }
 
         if (insteadLoad() != 0) {
             context.showToast("Can not load game")
-            return
+            return@withContext
         }
     }
 
-    fun send(text: String): String {
-        return command("@metaparser \"$text\"")
+    suspend fun send(text: String): String = withContext(Dispatchers.IO) {
+        return@withContext command("@metaparser \"$text\"")
     }
 
-    fun save(): String {
-        return command("save ../autosave")
+    suspend fun save(): String = withContext(Dispatchers.IO) {
+        return@withContext command("save ../autosave")
     }
 
-    fun save(name: String): String {
-        return command("save ../$name")
+    suspend fun save(name: String): String = withContext(Dispatchers.IO) {
+        return@withContext command("save ../$name")
     }
 
-    fun load(): String {
+    suspend fun load(): String = withContext(Dispatchers.IO) {
         val autosave = File(StorageHelper(context).getAppFilesDirectory(), "autosave")
-        return if (autosave.exists()) {
+        return@withContext if (autosave.exists()) {
             command("load ../autosave")
         } else {
             command("look")
         }
     }
 
-    fun load(name: String): String {
-        return command("load ../$name")
+    suspend fun load(name: String): String = withContext(Dispatchers.IO) {
+        return@withContext command("load ../$name")
     }
 
-    fun done() {
+    suspend fun done() = withContext(Dispatchers.IO) {
         insteadDone()
     }
 
-    fun isRestartFromGame(): Boolean {
-        return isRestart() != 0
+    suspend fun isRestartFromGame(): Boolean = withContext(Dispatchers.IO) {
+        return@withContext isRestart() != 0
     }
 }

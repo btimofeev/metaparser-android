@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
 import kotlinx.coroutines.*
 import org.apache.commons.io.FileUtils
@@ -24,11 +25,10 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     private val historyLiveData = MutableLiveData<ArrayList<Paragraph>>()
     private val showProgressState = MutableLiveData<Boolean>()
 
-    private val scope = CoroutineScope(Dispatchers.Main)
     private var game: Game = Game(getApplication())
     private var isInit = false
 
-    fun init() = scope.launch {
+    fun init() = viewModelScope.launch {
         if (!isInit) {
             showProgressState.value = true
             StorageHelper(getApplication()).copyResources()
@@ -48,19 +48,19 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         historyLiveData.value = history
     }
 
-    private fun loadGame() {
+    private fun loadGame() = viewModelScope.launch {
         val response = game.load()
         showTextBlock("", response)
     }
 
-    fun saveState(name: String? = null) {
+    fun saveState(name: String? = null) = viewModelScope.launch {
         if (name.isNullOrBlank())
             game.save()
         else
             game.save(name)
     }
 
-    fun loadState(name: String) {
+    fun loadState(name: String) = viewModelScope.launch {
         history.clear()
         game.done()
         game.init()
@@ -72,7 +72,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         return@runBlocking StorageHelper(getApplication()).getSaveStateInfo()
     }
 
-    fun restartGame() {
+    fun restartGame() = viewModelScope.launch {
         val autosave = File(StorageHelper(getApplication()).getAppFilesDirectory(), "autosave")
         if (autosave.exists() && !FileUtils.deleteQuietly(autosave))
             getApplication<Metaparser>().showToast(getApplication<Metaparser>().getString(R.string.error_delete_autosave_failed))
@@ -82,7 +82,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         loadGame()
     }
 
-    fun sendTextToGame(s: String) {
+    fun sendTextToGame(s: String) = viewModelScope.launch {
         val text = s.replace("\"", "")
         val response = game.send(text)
         showTextBlock("> $text", response)
@@ -107,8 +107,10 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     override fun onCleared() {
-        super.onCleared()
-        game.save()
-        game.done()
+        viewModelScope.launch {
+            super.onCleared()
+            game.save()
+            game.done()
+        }
     }
 }
