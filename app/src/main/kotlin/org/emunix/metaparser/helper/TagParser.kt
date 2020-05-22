@@ -8,6 +8,8 @@ import android.text.style.AlignmentSpan
 import android.text.style.StrikethroughSpan
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.xml.sax.Attributes
 import org.xml.sax.InputSource
 import org.xml.sax.SAXException
@@ -25,7 +27,7 @@ object TagParser : DefaultHandler() {
         reader.contentHandler = this
     }
 
-    fun parse(source: String): Spanned {
+    suspend fun parse(source: String): Spanned = withContext(Dispatchers.IO) {
         spannableStringBuilder = SpannableStringBuilder()
         try {
             reader.parse(InputSource(StringReader(source)))
@@ -37,7 +39,7 @@ object TagParser : DefaultHandler() {
             throw RuntimeException(e)
         }
 
-        return spannableStringBuilder
+        return@withContext spannableStringBuilder
     }
 
     private fun handleStartTag(tag: String) {

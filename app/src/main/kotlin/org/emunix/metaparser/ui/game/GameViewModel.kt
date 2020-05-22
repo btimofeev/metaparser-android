@@ -42,7 +42,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    private fun showTextBlock(command: String, text: String) {
+    private fun showTextBlock(command: String, text: String) = viewModelScope.launch {
         val spanned = TagParser.parse(text)
         val paragraph = Paragraph(command, spanned)
         history.add(paragraph)
