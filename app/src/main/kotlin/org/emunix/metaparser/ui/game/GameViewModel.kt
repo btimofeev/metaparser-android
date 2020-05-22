@@ -13,7 +13,6 @@ import org.emunix.metaparser.helper.StorageHelper
 import org.emunix.metaparser.helper.TagParser
 import org.emunix.metaparser.helper.ThemeHelper
 import org.emunix.metaparser.helper.showToast
-import timber.log.Timber
 import java.io.File
 
 
@@ -39,7 +38,6 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                 isInit = true
             } catch (e: MetaparserException) {
                 showCriticalError.value = e.message
-                Timber.e(e)
             }
         }
     }
@@ -52,23 +50,35 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun loadGame() = viewModelScope.launch {
-        val response = game.load()
-        showTextBlock("", response)
+        try {
+            val response = game.load()
+            showTextBlock("", response)
+        } catch (e: MetaparserException) {
+            showCriticalError.value = e.message
+        }
     }
 
     fun saveState(name: String? = null) = viewModelScope.launch {
-        if (name.isNullOrBlank())
-            game.save()
-        else
-            game.save(name)
+        try {
+            if (name.isNullOrBlank())
+                game.save()
+            else
+                game.save(name)
+        } catch (e: MetaparserException) {
+            showCriticalError.value = e.message
+        }
     }
 
     fun loadState(name: String) = viewModelScope.launch {
         history.clear()
         game.done()
-        game.init()
-        val response = game.load(name)
-        showTextBlock("", response)
+        try {
+            game.init()
+            val response = game.load(name)
+            showTextBlock("", response)
+        } catch (e: MetaparserException) {
+            showCriticalError.value = e.message
+        }
     }
 
     fun getSaveStates(): HashMap<Int, String?> = runBlocking {
@@ -81,17 +91,25 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             getApplication<Metaparser>().showToast(getApplication<Metaparser>().getString(R.string.error_delete_autosave_failed))
         history.clear()
         game.done()
-        game.init()
-        loadGame()
+        try {
+            game.init()
+            loadGame()
+        } catch (e: MetaparserException) {
+            showCriticalError.value = e.message
+        }
     }
 
     fun sendTextToGame(s: String) = viewModelScope.launch {
         val text = s.replace("\"", "")
-        val response = game.send(text)
-        showTextBlock("> $text", response)
 
-        if (game.isRestartFromGame())
-            restartGame()
+        try {
+            val response = game.send(text)
+            showTextBlock("> $text", response)
+            if (game.isRestartFromGame())
+                restartGame()
+        } catch (e: MetaparserException) {
+            showCriticalError.value = e.message
+        }
     }
 
     fun getHistory(): LiveData<ArrayList<Paragraph>> = historyLiveData

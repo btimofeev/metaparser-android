@@ -20,12 +20,18 @@ class Game(val context: Context) {
     external fun insteadInit(directory: String, gameDir: String): Int
     external fun insteadErr(): String
     external fun insteadLoad(): Int
-    external fun insteadCommand(cmd: String): String
+    external fun insteadCommand(cmd: String): String?
     external fun insteadDone()
     external fun isRestart(): Int
 
     private fun command(text: String): String {
-        return insteadCommand(text)
+        val ret = insteadCommand(text)
+        if (ret == null) {
+            val err = insteadErr()
+            Timber.e(err)
+            throw MetaparserException("instead_cmd(): $err")
+        }
+        return ret
     }
 
     suspend fun init() = withContext(Dispatchers.IO) {
