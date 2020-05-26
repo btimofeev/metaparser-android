@@ -12,6 +12,7 @@
     <string name="action_text_empty_slot">Пустой слот</string>
 
     <string name="activity_game_edittext_hint">Введите команду</string>
+    <string name="activity_game_send_button_accessibility">Отправить команду</string>
     
     <string name="dialog_new_game_title">Играть с начала?</string>
     <string name="dialog_new_game_text">Вы действительно хотите начать новую игру? Текущий прогресс будет потерян.</string>

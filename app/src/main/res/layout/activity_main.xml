@@ -92,6 +92,7 @@
         android:layout_height="48dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:contentDescription="@string/activity_game_send_button_accessibility"
         app:icon="@drawable/send"
         app:iconPadding="0dp"
         app:iconGravity="textStart"
