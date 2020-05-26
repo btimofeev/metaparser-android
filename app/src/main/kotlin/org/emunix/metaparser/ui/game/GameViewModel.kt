@@ -1,6 +1,7 @@
 package org.emunix.metaparser.ui.game
 
 import android.app.Application
+import android.text.Spanned
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -44,8 +45,9 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun showTextBlock(command: String, text: String) = viewModelScope.launch {
-        val spanned = TagParser.parse(text)
-        val paragraph = Paragraph(command, spanned)
+        val spannedCommand: Spanned = AccessibilityHelper.getSpannedCommand(getApplication(), command)
+        val spannedText = TagParser.parse(text)
+        val paragraph = Paragraph(spannedCommand, spannedText)
         history.add(paragraph)
         historyLiveData.value = history
     }
