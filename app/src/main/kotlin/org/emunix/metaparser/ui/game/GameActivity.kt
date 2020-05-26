@@ -14,7 +14,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.activity_main.*
@@ -24,6 +23,7 @@ import org.emunix.metaparser.helper.showToast
 import org.emunix.metaparser.helper.visible
 import org.emunix.metaparser.ui.dialog.NewGameDialog
 import org.emunix.metaparser.ui.dialog.NewGameDialogListener
+import org.emunix.metaparser.ui.view.TopSmoothScroller
 
 
 const val REQUEST_SPEECH_TO_TEXT = 1001
@@ -46,11 +46,6 @@ class GameActivity : AppCompatActivity() {
         recyclerView.layoutManager = layoutManager
         listAdapter = GameAdapter()
         recyclerView.adapter = listAdapter
-        val smoothScroller = object : LinearSmoothScroller(this) {
-            override fun getVerticalSnapPreference(): Int {
-                return SNAP_TO_START
-            }
-        }
 
         viewModel = ViewModelProvider(this).get(GameViewModel::class.java)
 
@@ -76,9 +71,13 @@ class GameActivity : AppCompatActivity() {
         viewModel.getHistory().observe(this, Observer { history ->
             listAdapter.setItems(history)
             listAdapter.notifyDataSetChanged()
-            smoothScroller.targetPosition = listAdapter.itemCount - 1
-            layoutManager.startSmoothScroll(smoothScroller)
-        } )
+            val smoothScroller = TopSmoothScroller(this)
+            val target = listAdapter.itemCount - 1
+            if (target >= 0) {
+                smoothScroller.targetPosition = target
+                layoutManager.startSmoothScroll(smoothScroller)
+            }
+        })
 
         editText.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
