@@ -25,5 +25,10 @@ std.mod_start(function()
 	if mp then
 		mp.msg.CUTSCENE_HELP = "Для продолжения нажмите {$fmt b|ввод} или введите {$fmt em|дальше}."
 		mp.msg.CUTSCENE_MORE = "^Для продолжения нажмите {$fmt b|ввод} или введите {$fmt em|дальше}."
+		MetaVerb {
+        	"#MetaRestart",
+        	"~заново,~рестарт,~restart",
+        	"MetaRestart"
+        }
 	end
 end)
