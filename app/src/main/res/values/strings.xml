@@ -12,6 +12,7 @@
     <string name="action_text_empty_slot">Пустой слот</string>
 
     <string name="activity_game_edittext_hint">Введите команду</string>
+    <string name="activity_game_voice_button_accessibility">Голосовой ввод</string>
     <string name="activity_game_send_button_accessibility">Отправить команду</string>
     
     <string name="dialog_new_game_title">Играть с начала?</string>
@@ -21,4 +22,5 @@
 
     <string name="critical_error">Упс..\n\nПроизошла критическая ошибка, приложение остановлено.\n\n%1$s</string>
     <string name="error_delete_autosave_failed">Не удалось удалить autosave</string>
+    <string name="error_device_not_support_speech_to_text">Ваше устройство не поддерживает голосовой ввод</string>
 </resources>

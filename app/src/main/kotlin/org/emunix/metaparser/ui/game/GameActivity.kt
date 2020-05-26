@@ -1,6 +1,10 @@
 package org.emunix.metaparser.ui.game
 
+import android.app.Activity
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.os.Bundle
+import android.speech.RecognizerIntent
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
@@ -16,10 +20,13 @@ import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.activity_main.*
 import org.emunix.metaparser.R
 import org.emunix.metaparser.helper.ThemeHelper
+import org.emunix.metaparser.helper.showToast
 import org.emunix.metaparser.helper.visible
 import org.emunix.metaparser.ui.dialog.NewGameDialog
 import org.emunix.metaparser.ui.dialog.NewGameDialogListener
 
+
+const val REQUEST_SPEECH_TO_TEXT = 1001
 
 class GameActivity : AppCompatActivity() {
 
@@ -51,6 +58,7 @@ class GameActivity : AppCompatActivity() {
             progressBar.visible(showProgressState)
             recyclerView.visible(!showProgressState)
             editText.visible(!showProgressState)
+            voiceButton.visible(!showProgressState)
             enterButton.visible(!showProgressState)
             errorMessage.visible(false)
         })
@@ -60,6 +68,7 @@ class GameActivity : AppCompatActivity() {
             progressBar.visible(false)
             recyclerView.visible(false)
             editText.visible(false)
+            voiceButton.visible(false)
             enterButton.visible(false)
             errorMessage.visible(true)
         })
@@ -106,10 +115,32 @@ class GameActivity : AppCompatActivity() {
             editText.dispatchKeyEvent(KeyEvent(0, 0, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER, 0))
         }
 
+        voiceButton.setOnClickListener {
+            val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, "ru-RU")
+
+            try {
+                startActivityForResult(intent, REQUEST_SPEECH_TO_TEXT)
+            } catch (e: ActivityNotFoundException) {
+                applicationContext.showToast(getString(R.string.error_device_not_support_speech_to_text))
+            }
+        }
+
         if (savedInstanceState != null) {
             // after changing screen orientation the listener is not set
             val newGameDialog = supportFragmentManager.findFragmentByTag("new_game_dialog") as NewGameDialog?
             newGameDialog?.setListener(newGameDialogListener)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_SPEECH_TO_TEXT) {
+            if (resultCode == Activity.RESULT_OK && data != null) {
+                val result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                if (result != null && result[0] != null)
+                    editText.append(result[0])
+            }
         }
     }
 
