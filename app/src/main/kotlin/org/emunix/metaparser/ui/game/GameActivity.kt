@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.activity_main.*
 import org.emunix.metaparser.R
 import org.emunix.metaparser.helper.ThemeHelper
@@ -78,6 +79,14 @@ class GameActivity : AppCompatActivity() {
                 return@OnKeyListener true
             }
             false
+        })
+
+        viewModel.getPinToolbar().observe(this, Observer { pin ->
+            val params = toolbar.layoutParams as AppBarLayout.LayoutParams
+            if (pin)
+                params.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_NO_SCROLL
+            else
+                params.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
         })
 
         viewModel.init()

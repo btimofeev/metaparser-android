@@ -9,10 +9,7 @@ import androidx.preference.PreferenceManager
 import kotlinx.coroutines.*
 import org.apache.commons.io.FileUtils
 import org.emunix.metaparser.*
-import org.emunix.metaparser.helper.StorageHelper
-import org.emunix.metaparser.helper.TagParser
-import org.emunix.metaparser.helper.ThemeHelper
-import org.emunix.metaparser.helper.showToast
+import org.emunix.metaparser.helper.*
 import java.io.File
 
 
@@ -22,11 +19,15 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     private val historyLiveData = MutableLiveData<ArrayList<Paragraph>>()
     private val showProgressState = MutableLiveData<Boolean>()
     private val showCriticalError = MutableLiveData<String>()
+    private val pinToolbar = MutableLiveData<Boolean>()
 
     private var game: Game = Game(getApplication())
     private var isInit = false
 
     fun init() = viewModelScope.launch {
+        if (AccessibilityHelper.isTouchExplorationEnabled(getApplication<Metaparser>()))
+            pinToolbar.value = true
+
         if (!isInit) {
             showProgressState.value = true
             StorageHelper(getApplication()).copyResources()
@@ -117,6 +118,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     fun getShowProgressState(): LiveData<Boolean> = showProgressState
 
     fun getShowCriticalError(): LiveData<String> = showCriticalError
+
+    fun getPinToolbar(): LiveData<Boolean> = pinToolbar
 
     fun getAppTheme(): String {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication())
