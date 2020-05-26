@@ -2,9 +2,9 @@
     <string name="app_name">metaparser</string>
     
     <string name="action_new_game">Новая игра</string>
-    <string name="action_save_game">Сохранить</string>
-    <string name="action_load_game">Загрузить</string>
-    <string name="action_theme">Тема</string>
+    <string name="action_save_game">Сохранить игру</string>
+    <string name="action_load_game">Загрузить игру</string>
+    <string name="action_theme">Тема приложения</string>
     <string name="action_theme_light">Светлая</string>
     <string name="action_theme_dark">Тёмная</string>
     <string name="action_theme_default">Системная</string>
