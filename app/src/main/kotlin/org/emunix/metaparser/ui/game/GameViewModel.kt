@@ -68,9 +68,10 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         try {
             if (name.isNullOrBlank())
                 game.save()
-            else
+            else {
                 game.save(name)
-            getApplication<Metaparser>().showToast(R.string.game_saved, Toast.LENGTH_SHORT)
+                getApplication<Metaparser>().showToast(R.string.game_saved, Toast.LENGTH_SHORT)
+            }
         } catch (e: MetaparserException) {
             showCriticalError.value = e.message
         }
