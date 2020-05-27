@@ -93,7 +93,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     fun restartGame() = viewModelScope.launch {
         val autosave = File(StorageHelper(getApplication()).getAppFilesDirectory(), "autosave")
         if (autosave.exists() && !FileUtils.deleteQuietly(autosave))
-            getApplication<Metaparser>().showToast(getApplication<Metaparser>().getString(R.string.error_delete_autosave_failed))
+            getApplication<Metaparser>().showToast(R.string.error_delete_autosave_failed)
         history.clear()
         historyLiveData.value = history
         game.done()

@@ -127,7 +127,7 @@ class GameActivity : AppCompatActivity() {
             try {
                 startActivityForResult(intent, REQUEST_SPEECH_TO_TEXT)
             } catch (e: ActivityNotFoundException) {
-                applicationContext.showToast(getString(R.string.error_device_not_support_speech_to_text))
+                applicationContext.showToast(R.string.error_device_not_support_speech_to_text)
             }
         }
 
