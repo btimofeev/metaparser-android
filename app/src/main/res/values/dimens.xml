@@ -1,4 +1,7 @@
 <resources>
-    <dimen name="text_margin_start">16dp</dimen>
-    <dimen name="text_margin_end">16dp</dimen>
+    <dimen name="text_margin_start">16dp</dimen>                <!--отступ от левого края-->
+    <dimen name="text_margin_end">16dp</dimen>                  <!--отступ от правого края-->
+
+    <dimen name="command_text_size">16sp</dimen>                <!--размер текста введенной команды-->
+    <dimen name="answer_text_size">16sp</dimen>                 <!--размер текста ответа метапарсера-->
 </resources>

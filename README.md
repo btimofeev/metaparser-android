@@ -52,9 +52,11 @@ end
 
 Иконки нужно заменить в директориях `app/src/main/res/mipmap-*` (вместо * имеются ввиду: hdpi, mdpi, xhdpi, xxhdpi, xxxhdpi и anydpi-v26 для адаптивных иконок).
 
-### Измените цвета
+### Измените внешний вид приложения
 
 Изменить цветовую гамму приложения можно в файле `app/src/main/res/values/colors.xml` для светлой темы и в `app/src/main/res/values-night/colors.xml` для тёмной темы.
+
+Изменить размер шрифта и отступы от краёв можно в файле `app/src/main/res/values/dimens.xml` для телефона, `app/src/main/res/values-w600dp/dimens.xml` и `app/src/main/res/values-w800dp/dimens.xml` для планшетов.
 
 ### Установите Android SDK и NDK
 
