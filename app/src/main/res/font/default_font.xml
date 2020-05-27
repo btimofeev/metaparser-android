@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!-- Default font used in app is Literata: https://fonts.google.com/specimen/Literata -->
+
 <font-family xmlns:app="http://schemas.android.com/apk/res-auto">
     <font
         app:fontStyle="normal"
-        app:font="@font/literata_regular" />
+        app:font="@font/default_regular" />
     <font
         app:fontStyle="italic"
-        app:font="@font/literata_italic" />
+        app:font="@font/default_italic" />
     <font
         app:fontWeight="700"
-        app:font="@font/literata_bold" />
+        app:font="@font/default_bold" />
     <font
         app:fontWeight="700"
         app:fontStyle="italic"
-        app:font="@font/literata_bold_italic" />
+        app:font="@font/default_bold_italic" />
 </font-family>

@@ -58,6 +58,8 @@ end
 
 Изменить размер шрифта и отступы от краёв можно в файле `app/src/main/res/values/dimens.xml` для телефона, `app/src/main/res/values-w600dp/dimens.xml` и `app/src/main/res/values-w800dp/dimens.xml` для планшетов.
 
+Что бы установить другой шрифт для текста вам необходимо заменить ttf файлы шрифтов в директории `app/src/main/res/font/`.
+
 ### Установите Android SDK и NDK
 
 Для сборки приложения вам необходимо скачать [Android SDK](https://developer.android.com/studio#downloads) и [Android NDK](https://developer.android.com/ndk/downloads)(для сборки из консоли), либо [Android Studio](https://developer.android.com/studio)(для любителей GUI).
