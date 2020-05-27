@@ -11,6 +11,8 @@
 
     <string name="save_menu_text_empty_slot">Пустой слот</string>
     <string name="saves_not_found">Сохранённых игр не найдено</string>
+    <string name="game_saved">Игра сохранена</string>
+    <string name="game_loaded">Игра загружена</string>
 
     <string name="activity_game_edittext_hint">Введите команду</string>
     <string name="activity_game_voice_button_accessibility">Голосовой ввод</string>

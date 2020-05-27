@@ -2,6 +2,7 @@ package org.emunix.metaparser.ui.game
 
 import android.app.Application
 import android.text.Spanned
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -69,6 +70,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                 game.save()
             else
                 game.save(name)
+            getApplication<Metaparser>().showToast(R.string.game_saved, Toast.LENGTH_SHORT)
         } catch (e: MetaparserException) {
             showCriticalError.value = e.message
         }
@@ -80,6 +82,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         try {
             game.init()
             val response = game.load(name)
+            getApplication<Metaparser>().showToast(R.string.game_loaded, Toast.LENGTH_SHORT)
             showTextBlock("", response)
         } catch (e: MetaparserException) {
             showCriticalError.value = e.message
