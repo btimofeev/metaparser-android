@@ -14,7 +14,6 @@
 
     <string name="activity_game_edittext_hint">Введите команду</string>
     <string name="activity_game_voice_button_accessibility">Голосовой ввод</string>
-    <string name="activity_game_send_button_accessibility">Отправить команду</string>
 
     <string name="span_command_accessibility">Вы ввели,</string>
     
