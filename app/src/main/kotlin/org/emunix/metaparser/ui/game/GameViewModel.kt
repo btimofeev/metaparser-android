@@ -20,6 +20,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     private val historyLiveData = MutableLiveData<ArrayList<Paragraph>>()
     private val showProgressState = MutableLiveData<Boolean>()
     private val showCriticalError = MutableLiveData<String>()
+    private val showSaveMenu = MutableLiveData<Boolean>()
+    private val showLoadMenu = MutableLiveData<Boolean>()
     private val pinToolbar = MutableLiveData<Boolean>()
 
     private var game: Game = Game(getApplication())
@@ -109,8 +111,20 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         try {
             val response = game.send(text)
             showTextBlock("> $text", response)
-            if (game.isRestartFromGame())
+            if (game.isRestartFromGame()) {
                 restartGame()
+                return@launch
+            }
+            if (game.isSaveFromGame()) {
+                showSaveMenu.value = true
+                showSaveMenu.value = false
+                return@launch
+            }
+            if (game.isLoadFromGame()) {
+                showLoadMenu.value = true
+                showLoadMenu.value = false
+                return@launch
+            }
         } catch (e: MetaparserException) {
             showCriticalError.value = e.message
         }
@@ -121,6 +135,10 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     fun getShowProgressState(): LiveData<Boolean> = showProgressState
 
     fun getShowCriticalError(): LiveData<String> = showCriticalError
+
+    fun getShowSaveMenu(): LiveData<Boolean> = showSaveMenu
+
+    fun getShowLoadMenu(): LiveData<Boolean> = showLoadMenu
 
     fun getPinToolbar(): LiveData<Boolean> = pinToolbar
 

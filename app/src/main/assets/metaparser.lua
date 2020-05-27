@@ -18,6 +18,7 @@ iface.center = html_tag('center')
 iface.right = html_tag('right')
 
 instead.restart = instead_restart
+instead.menu = instead_menu
 instead.tiny = true
 
 std.mod_start(function()

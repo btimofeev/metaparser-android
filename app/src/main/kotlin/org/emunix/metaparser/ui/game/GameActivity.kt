@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.android.synthetic.main.activity_main.*
 import org.emunix.metaparser.R
 import org.emunix.metaparser.helper.ThemeHelper
@@ -97,6 +98,18 @@ class GameActivity : AppCompatActivity() {
                 params.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
         })
 
+        viewModel.getShowSaveMenu().observe(this, Observer { trigger ->
+            if(trigger) {
+                showSaveMenu()
+            }
+        })
+
+        viewModel.getShowLoadMenu().observe(this, Observer { trigger ->
+            if(trigger) {
+                showLoadMenu()
+            }
+        })
+
         viewModel.init()
 
         newGameDialogListener = object : NewGameDialogListener{
@@ -154,63 +167,17 @@ class GameActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        val saves = viewModel.getSaveStates()
-        for (save in saves) {
-            val text = save.value ?: getString(R.string.action_text_empty_slot)
-            when (save.key) {
-                1 -> {
-                    menu?.findItem(R.id.action_save_game_1)?.title = "1. $text"
-                    menu?.findItem(R.id.action_load_game_1)?.run {
-                        title = "1. $text"
-                        isEnabled = save.value != null
-                    }
-                }
-                2 -> {
-                    menu?.findItem(R.id.action_save_game_2)?.title = "2. $text"
-                    menu?.findItem(R.id.action_load_game_2)?.run {
-                        title = "2. $text"
-                        isEnabled = save.value != null
-                    }
-                }
-                3 -> {
-                    menu?.findItem(R.id.action_save_game_3)?.title = "3. $text"
-                    menu?.findItem(R.id.action_load_game_3)?.run {
-                        title = "3. $text"
-                        isEnabled = save.value != null
-                    }
-                }
-            }
-        }
-        return true
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
             R.id.action_new_game -> {
                 val newGameDialog = NewGameDialog.newInstance(newGameDialogListener)
                 newGameDialog.show(supportFragmentManager, "new_game_dialog")
             }
-            R.id.action_save_game_1 -> {
-                viewModel.saveState("1.sav")
-                invalidateOptionsMenu()
+            R.id.action_save_game -> {
+                showSaveMenu()
             }
-            R.id.action_save_game_2 -> {
-                viewModel.saveState("2.sav")
-                invalidateOptionsMenu()
-            }
-            R.id.action_save_game_3 -> {
-                viewModel.saveState("3.sav")
-                invalidateOptionsMenu()
-            }
-            R.id.action_load_game_1 -> {
-                viewModel.loadState("1.sav")
-            }
-            R.id.action_load_game_2 -> {
-                viewModel.loadState("2.sav")
-            }
-            R.id.action_load_game_3 -> {
-                viewModel.loadState("3.sav")
+            R.id.action_load_game -> {
+                showLoadMenu()
             }
             R.id.theme_light -> {
                 viewModel.setAppTheme(ThemeHelper.LIGHT_MODE)
@@ -227,6 +194,49 @@ class GameActivity : AppCompatActivity() {
             else -> return super.onOptionsItemSelected(item)
         }
         return true
+    }
+
+    fun showSaveMenu() {
+        val saves = viewModel.getSaveStates()
+        val items = mutableListOf<String>()
+        for ((key, value) in saves) {
+            val text = value ?: getString(R.string.save_menu_text_empty_slot)
+            items.add("$key. $text")
+        }
+        MaterialAlertDialogBuilder(this, R.style.AppTheme_AlertDialogOverlay)
+            .setTitle(R.string.action_save_game)
+            .setItems(items.toTypedArray()) { _, which ->
+                viewModel.saveState("${which + 1}.sav")
+            }.setNegativeButton(R.string.dialog_save_load_negative_button) { dialog, _ ->
+                dialog.cancel()
+            }.create()
+            .show()
+    }
+
+    fun showLoadMenu() {
+        val saves = viewModel.getSaveStates()
+        val items = mutableListOf<String>()
+        val mapDialogItemToSave = mutableMapOf<Int, Int>()
+        var couter = 0
+        for ((key, value) in saves) {
+            if (value != null) {
+                items.add("$key. $value")
+                mapDialogItemToSave[couter] = key
+                couter++
+            }
+        }
+        if (items.isEmpty()) {
+            showToast(getString(R.string.saves_not_found))
+        } else {
+            MaterialAlertDialogBuilder(this, R.style.AppTheme_AlertDialogOverlay)
+                .setTitle(R.string.action_load_game)
+                .setItems(items.toTypedArray()) { _, which ->
+                    viewModel.loadState("${mapDialogItemToSave[which]}.sav")
+                }.setNegativeButton(R.string.dialog_save_load_negative_button) { dialog, _ ->
+                    dialog.cancel()
+                }.create()
+                .show()
+        }
     }
 
     override fun onPause() {

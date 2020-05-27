@@ -1,10 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <jni.h>
 #include <util.h>
 #include "instead.h"
 
 static int need_restart = 0;
+static int need_save = 0;
+static int need_load = 0;
 
 static int luaB_restart(lua_State *L)
 {
@@ -12,8 +15,19 @@ static int luaB_restart(lua_State *L)
     return 0;
 }
 
+static int luaB_menu(lua_State *L)
+{
+    const char *menu = luaL_optstring(L, 1, NULL);
+    if (!menu)
+        return 0;
+    need_save = !strcmp(menu, "save");
+    need_load = !strcmp(menu, "load");
+    return 0;
+}
+
 const luaL_Reg tiny_funcs[] = {
-        {"instead_restart", luaB_restart},
+        { "instead_restart", luaB_restart },
+        { "instead_menu", luaB_menu },
         { NULL, NULL }
 };
 
@@ -81,5 +95,19 @@ JNIEXPORT jint JNICALL Java_org_emunix_metaparser_Game_isRestart(JNIEnv* env, jo
 {
     int ov = need_restart;
     need_restart = 0;
+    return ov;
+}
+
+JNIEXPORT jint JNICALL Java_org_emunix_metaparser_Game_isSave(JNIEnv* env, jobject instance)
+{
+    int ov = need_save;
+    need_save = 0;
+    return ov;
+}
+
+JNIEXPORT jint JNICALL Java_org_emunix_metaparser_Game_isLoad(JNIEnv* env, jobject instance)
+{
+    int ov = need_load;
+    need_load = 0;
     return ov;
 }

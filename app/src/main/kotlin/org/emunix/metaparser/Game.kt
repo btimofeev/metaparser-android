@@ -23,6 +23,8 @@ class Game(val context: Context) {
     external fun insteadCommand(cmd: String): String?
     external fun insteadDone()
     external fun isRestart(): Int
+    external fun isSave(): Int
+    external fun isLoad(): Int
 
     private fun command(text: String): String {
         val ret = insteadCommand(text)
@@ -85,5 +87,13 @@ class Game(val context: Context) {
 
     suspend fun isRestartFromGame(): Boolean = withContext(Dispatchers.IO) {
         return@withContext isRestart() != 0
+    }
+
+    suspend fun isSaveFromGame(): Boolean = withContext(Dispatchers.IO) {
+        return@withContext isSave() != 0
+    }
+
+    suspend fun isLoadFromGame(): Boolean = withContext(Dispatchers.IO) {
+        return@withContext isLoad() != 0
     }
 }
