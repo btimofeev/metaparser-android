@@ -13,6 +13,7 @@ import org.apache.commons.io.FileUtils
 import org.emunix.metaparser.*
 import org.emunix.metaparser.helper.*
 import org.emunix.metaparser.preferences.ApplicationPreferences
+import org.emunix.metaparser.storage.Storage
 import java.io.File
 import javax.inject.Inject
 
@@ -20,7 +21,7 @@ import javax.inject.Inject
 class GameViewModel @Inject constructor(
     val game: Game,
     val tagParser: TagParser,
-    val storage: StorageHelper,
+    val storage: Storage,
     val accessibilityHelper: AccessibilityHelper,
     val themeHelper: ThemeHelper,
     val preferences: ApplicationPreferences,
@@ -43,7 +44,7 @@ class GameViewModel @Inject constructor(
 
         if (!isInit) {
             showProgressState.value = true
-            storage.copyResources()
+            storage.copyResourcesFromApk()
             showProgressState.value = false
 
             try {
@@ -100,7 +101,7 @@ class GameViewModel @Inject constructor(
         }
     }
 
-    fun getSaveStates(): HashMap<Int, String?> = runBlocking {
+    fun getSaveStates(): Map<Int, String?> = runBlocking {
         return@runBlocking storage.getSaveStateInfo()
     }
 

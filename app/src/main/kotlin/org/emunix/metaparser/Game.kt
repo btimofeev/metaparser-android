@@ -2,12 +2,12 @@ package org.emunix.metaparser
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.emunix.metaparser.helper.StorageHelper
+import org.emunix.metaparser.storage.Storage
 import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 
-class Game @Inject constructor(val storage: StorageHelper) {
+class Game @Inject constructor(val storage: Storage) {
 
     companion object {
         init {

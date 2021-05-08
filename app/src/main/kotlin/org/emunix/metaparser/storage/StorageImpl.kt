@@ -1,4 +1,4 @@
-package org.emunix.metaparser.helper
+package org.emunix.metaparser.storage
 
 import android.content.Context
 import android.os.Environment
@@ -8,6 +8,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.apache.commons.io.FileUtils
 import org.emunix.metaparser.BuildConfig
+import org.emunix.metaparser.helper.AppVersionHelper
+import org.emunix.metaparser.helper.showToast
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -17,12 +19,12 @@ import javax.inject.Singleton
 import kotlin.collections.HashMap
 
 @Singleton
-class StorageHelper @Inject constructor(
+class StorageImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val appVersionHelper: AppVersionHelper
-) {
+) : Storage {
 
-    fun getAppFilesDirectory(): File {
+    override fun getAppFilesDirectory(): File {
         val storage: Array<File> = context.getExternalFilesDirs(null)
         for (file in storage) {
             if (file != null) {
@@ -36,13 +38,46 @@ class StorageHelper @Inject constructor(
         return getDataDirectory()
     }
 
-    fun getDataDirectory(): File = context.filesDir
+    override suspend fun copyResourcesFromApk() {
+        withContext(Dispatchers.IO) {
+            if (appVersionHelper.isNewAppVersion() || BuildConfig.DEBUG) {
+                getSteadDirectory().deleteRecursively()
+                copyAsset(STEAD_DIR_NAME, getAppFilesDirectory())
 
-    fun getSteadDirectory(): File = File(getAppFilesDirectory(), "stead")
+                getGameDirectory().deleteRecursively()
+                copyAsset(GAME_DIR_NAME, getAppFilesDirectory())
 
-    fun getGameDirectory(): File = File(getAppFilesDirectory(), "game")
+                copyAsset("metaparser.lua", getSteadDirectory())
 
-    fun copyAsset(name: String, toPath: File) {
+                appVersionHelper.saveCurrentAppVersion()
+            }
+        }
+    }
+
+    override suspend fun getSaveStateInfo(): Map<Int, String?> {
+        val saves = HashMap<Int, String?>()
+        withContext(Dispatchers.IO) {
+            for (i in 1..NUMBER_OF_SAVE_STATES) {
+                val file = File(getAppFilesDirectory(), "$i.sav")
+                if (file.exists()) {
+                    val timestamp = file.lastModified()
+                    val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.US)
+                    saves[i] = dateFormat.format(Date(timestamp))
+                } else {
+                    saves[i] = null
+                }
+            }
+        }
+        return saves
+    }
+
+    private fun getDataDirectory(): File = context.filesDir
+
+    private fun getSteadDirectory(): File = File(getAppFilesDirectory(), STEAD_DIR_NAME)
+
+    private fun getGameDirectory(): File = File(getAppFilesDirectory(), GAME_DIR_NAME)
+
+    private fun copyAsset(name: String, toPath: File) {
         val assetManager = context.assets
         try {
             val assets = assetManager.list(name) ?: throw IOException("Assets not found")
@@ -61,36 +96,9 @@ class StorageHelper @Inject constructor(
         }
     }
 
-    suspend fun copyResources() {
-        withContext(Dispatchers.IO) {
-            if (appVersionHelper.isNewAppVersion() || BuildConfig.DEBUG) {
-                getSteadDirectory().deleteRecursively()
-                copyAsset("stead", getAppFilesDirectory())
-
-                getGameDirectory().deleteRecursively()
-                copyAsset("game", getAppFilesDirectory())
-
-                copyAsset("metaparser.lua", getSteadDirectory())
-
-                appVersionHelper.saveCurrentAppVersion()
-            }
-        }
-    }
-
-    suspend fun getSaveStateInfo(): HashMap<Int, String?> {
-        val saves = HashMap<Int, String?>()
-        withContext(Dispatchers.IO) {
-            for (i in 1..3) {
-                val file = File(getAppFilesDirectory(), "$i.sav")
-                if (file.exists()) {
-                    val timestamp = file.lastModified()
-                    val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm")
-                    saves[i] = dateFormat.format(Date(timestamp))
-                } else {
-                    saves[i] = null
-                }
-            }
-        }
-        return saves
+    companion object {
+        private const val NUMBER_OF_SAVE_STATES = 3
+        private const val GAME_DIR_NAME = "game"
+        private const val STEAD_DIR_NAME = "stead"
     }
 }
