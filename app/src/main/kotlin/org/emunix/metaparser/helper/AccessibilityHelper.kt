@@ -8,11 +8,14 @@ import android.text.Spanned
 import android.text.style.TtsSpan
 import android.view.accessibility.AccessibilityManager
 import androidx.core.text.toSpanned
+import dagger.hilt.android.qualifiers.ApplicationContext
 import org.emunix.metaparser.R
 import timber.log.Timber
+import javax.inject.Inject
 
-object AccessibilityHelper {
-    fun isTouchExplorationEnabled(context: Context): Boolean {
+class AccessibilityHelper @Inject constructor(@ApplicationContext val context: Context) {
+
+    fun isTouchExplorationEnabled(): Boolean {
         val am = context.getSystemService(Application.ACCESSIBILITY_SERVICE) as AccessibilityManager
         val isTouchEnabled = am.isTouchExplorationEnabled
         Timber.d("Touch exploration is ${if (isTouchEnabled) "enabled" else "disabled"}")
@@ -25,7 +28,7 @@ object AccessibilityHelper {
         return spannable
     }
 
-    fun getSpannedCommand(context: Context, command: String): Spanned {
+    fun getSpannedCommand(command: String): Spanned {
         val spannedCommand: Spanned
         if (command.isNotEmpty() && command[0] == '>') {
             if (command.length > 1) {

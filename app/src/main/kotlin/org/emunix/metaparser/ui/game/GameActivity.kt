@@ -9,14 +9,15 @@ import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 import org.emunix.metaparser.R
 import org.emunix.metaparser.helper.ThemeHelper
@@ -29,10 +30,12 @@ import org.emunix.metaparser.ui.view.TopSmoothScroller
 
 const val REQUEST_SPEECH_TO_TEXT = 1001
 
+@AndroidEntryPoint
 class GameActivity : AppCompatActivity() {
 
+    private val viewModel by viewModels<GameViewModel>()
+
     private lateinit var listAdapter: GameAdapter
-    private lateinit var viewModel: GameViewModel
     private lateinit var newGameDialogListener: NewGameDialogListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,8 +50,6 @@ class GameActivity : AppCompatActivity() {
         recyclerView.layoutManager = layoutManager
         listAdapter = GameAdapter()
         recyclerView.adapter = listAdapter
-
-        viewModel = ViewModelProvider(this).get(GameViewModel::class.java)
 
         viewModel.getShowProgressState().observe(this, Observer { showProgressState ->
             progressBar.visible(showProgressState)

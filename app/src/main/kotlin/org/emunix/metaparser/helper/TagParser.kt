@@ -17,9 +17,12 @@ import org.xml.sax.XMLReader
 import org.xml.sax.helpers.DefaultHandler
 import java.io.IOException
 import java.io.StringReader
+import javax.inject.Inject
+import javax.inject.Singleton
 
 
-object TagParser : DefaultHandler() {
+@Singleton
+class TagParser @Inject constructor() : DefaultHandler() {
     private val reader: XMLReader = org.ccil.cowan.tagsoup.Parser();
     private lateinit var spannableStringBuilder: SpannableStringBuilder
 

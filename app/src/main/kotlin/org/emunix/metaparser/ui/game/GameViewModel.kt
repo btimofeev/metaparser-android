@@ -8,14 +8,23 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import org.apache.commons.io.FileUtils
 import org.emunix.metaparser.*
 import org.emunix.metaparser.helper.*
 import java.io.File
+import javax.inject.Inject
 
-
-class GameViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class GameViewModel @Inject constructor(
+    val game: Game,
+    val tagParser: TagParser,
+    val storage: StorageHelper,
+    val accessibilityHelper: AccessibilityHelper,
+    val themeHelper: ThemeHelper,
+    application: Application
+) : AndroidViewModel(application) {
 
     private val history = arrayListOf<Paragraph>()
     private val historyLiveData = MutableLiveData<ArrayList<Paragraph>>()
@@ -25,16 +34,15 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     private val showLoadMenu = MutableLiveData<Boolean>()
     private val pinToolbar = MutableLiveData<Boolean>()
 
-    private var game: Game = Game(getApplication())
     private var isInit = false
 
     fun init() = viewModelScope.launch {
-        if (AccessibilityHelper.isTouchExplorationEnabled(getApplication<Metaparser>()))
+        if (accessibilityHelper.isTouchExplorationEnabled())
             pinToolbar.value = true
 
         if (!isInit) {
             showProgressState.value = true
-            StorageHelper(getApplication()).copyResources()
+            storage.copyResources()
             showProgressState.value = false
 
             try {
@@ -48,8 +56,9 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun showTextBlock(command: String, text: String) = viewModelScope.launch {
-        val spannedCommand: Spanned = AccessibilityHelper.getSpannedCommand(getApplication(), command)
-        val spannedText = TagParser.parse(text)
+        val spannedCommand: Spanned =
+            accessibilityHelper.getSpannedCommand(command)
+        val spannedText = tagParser.parse(text)
         val paragraph = Paragraph(spannedCommand, spannedText)
         history.add(paragraph)
         historyLiveData.value = history
@@ -91,11 +100,11 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun getSaveStates(): HashMap<Int, String?> = runBlocking {
-        return@runBlocking StorageHelper(getApplication()).getSaveStateInfo()
+        return@runBlocking storage.getSaveStateInfo()
     }
 
     fun restartGame() = viewModelScope.launch {
-        val autosave = File(StorageHelper(getApplication()).getAppFilesDirectory(), "autosave")
+        val autosave = File(storage.getAppFilesDirectory(), "autosave")
         if (autosave.exists() && !FileUtils.deleteQuietly(autosave))
             getApplication<Metaparser>().showToast(R.string.error_delete_autosave_failed)
         history.clear()
@@ -148,11 +157,12 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getAppTheme(): String {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication())
-        return sharedPreferences.getString("app_theme", ThemeHelper.DEFAULT_MODE) ?: ThemeHelper.DEFAULT_MODE
+        return sharedPreferences.getString("app_theme", ThemeHelper.DEFAULT_MODE)
+            ?: ThemeHelper.DEFAULT_MODE
     }
 
     fun setAppTheme(theme: String) {
-        ThemeHelper.applyTheme(theme)
+        themeHelper.applyTheme(theme)
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication())
         sharedPreferences.edit().putString("app_theme", theme).apply()
     }

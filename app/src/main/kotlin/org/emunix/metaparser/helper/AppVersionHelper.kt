@@ -2,12 +2,10 @@ package org.emunix.metaparser.helper
 
 import android.content.Context
 import android.os.Build
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
-
-private const val PREFS_FILENAME = "version_prefs"
-private const val PREF_RESOURCES_LAST_UPDATE = "resources_last_update"
-
-class AppVersionHelper(val context: Context) {
+class AppVersionHelper @Inject constructor(@ApplicationContext val context: Context) {
 
     fun getVersionCode(): Long {
         var version: Long = 0
@@ -39,5 +37,10 @@ class AppVersionHelper(val context: Context) {
         val editor = prefs.edit()
         editor.putLong(PREF_RESOURCES_LAST_UPDATE, value)
         editor.apply()
+    }
+
+    companion object {
+        private const val PREFS_FILENAME = "version_prefs"
+        private const val PREF_RESOURCES_LAST_UPDATE = "resources_last_update"
     }
 }

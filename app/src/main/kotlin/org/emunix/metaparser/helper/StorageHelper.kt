@@ -3,6 +3,7 @@ package org.emunix.metaparser.helper
 import android.content.Context
 import android.os.Environment
 import androidx.core.os.EnvironmentCompat
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.apache.commons.io.FileUtils
@@ -11,12 +12,18 @@ import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.collections.HashMap
 
-class StorageHelper(val context: Context) {
+@Singleton
+class StorageHelper @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val appVersionHelper: AppVersionHelper
+) {
 
-    fun getAppFilesDirectory() : File {
-        val storage : Array<File> = context.getExternalFilesDirs(null)
+    fun getAppFilesDirectory(): File {
+        val storage: Array<File> = context.getExternalFilesDirs(null)
         for (file in storage) {
             if (file != null) {
                 val state = EnvironmentCompat.getStorageState(file)
@@ -56,7 +63,7 @@ class StorageHelper(val context: Context) {
 
     suspend fun copyResources() {
         withContext(Dispatchers.IO) {
-            if (AppVersionHelper(context).isNewAppVersion() || BuildConfig.DEBUG) {
+            if (appVersionHelper.isNewAppVersion() || BuildConfig.DEBUG) {
                 getSteadDirectory().deleteRecursively()
                 copyAsset("stead", getAppFilesDirectory())
 
@@ -65,7 +72,7 @@ class StorageHelper(val context: Context) {
 
                 copyAsset("metaparser.lua", getSteadDirectory())
 
-                AppVersionHelper(context).saveCurrentAppVersion(AppVersionHelper(context).getVersionCode())
+                appVersionHelper.saveCurrentAppVersion(appVersionHelper.getVersionCode())
             }
         }
     }

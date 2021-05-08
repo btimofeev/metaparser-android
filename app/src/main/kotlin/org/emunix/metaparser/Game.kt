@@ -1,13 +1,13 @@
 package org.emunix.metaparser
 
-import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.emunix.metaparser.helper.StorageHelper
 import timber.log.Timber
 import java.io.File
+import javax.inject.Inject
 
-class Game(val context: Context) {
+class Game @Inject constructor(val storage: StorageHelper) {
 
     companion object {
         init {
@@ -41,7 +41,7 @@ class Game(val context: Context) {
         if (extRet != 0)
             throw MetaparserException("instead_extension() return code: $extRet")
 
-        val dir = StorageHelper(context).getAppFilesDirectory().absolutePath
+        val dir = storage.getAppFilesDirectory().absolutePath
         val gameDir = "$dir/game"
         val initRet = insteadInit(dir, gameDir)
         if (initRet != 0)
@@ -69,7 +69,7 @@ class Game(val context: Context) {
     }
 
     suspend fun load(): String = withContext(Dispatchers.IO) {
-        val autosave = File(StorageHelper(context).getAppFilesDirectory(), "autosave")
+        val autosave = File(storage.getAppFilesDirectory(), "autosave")
         return@withContext if (autosave.exists()) {
             command("load ../autosave")
         } else {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Boris Timofeev <btimofeev@emunix.org>
+ * Copyright (c) 2019, 2021 Boris Timofeev <btimofeev@emunix.org>
  * Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).
  */
 
@@ -7,12 +7,9 @@ package org.emunix.metaparser.helper
 
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
+import javax.inject.Inject
 
-object ThemeHelper {
-
-    const val LIGHT_MODE = "light"
-    const val DARK_MODE = "dark"
-    const val DEFAULT_MODE = "default"
+class ThemeHelper @Inject constructor() {
 
     fun applyTheme(theme: String) {
         when (theme) {
@@ -30,5 +27,11 @@ object ThemeHelper {
                 }
             }
         }
+    }
+
+    companion object {
+        const val LIGHT_MODE = "light"
+        const val DARK_MODE = "dark"
+        const val DEFAULT_MODE = "default"
     }
 }
