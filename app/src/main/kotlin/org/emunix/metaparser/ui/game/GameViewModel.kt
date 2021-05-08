@@ -7,12 +7,12 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.preference.PreferenceManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import org.apache.commons.io.FileUtils
 import org.emunix.metaparser.*
 import org.emunix.metaparser.helper.*
+import org.emunix.metaparser.preferences.ApplicationPreferences
 import java.io.File
 import javax.inject.Inject
 
@@ -23,6 +23,7 @@ class GameViewModel @Inject constructor(
     val storage: StorageHelper,
     val accessibilityHelper: AccessibilityHelper,
     val themeHelper: ThemeHelper,
+    val preferences: ApplicationPreferences,
     application: Application
 ) : AndroidViewModel(application) {
 
@@ -155,16 +156,11 @@ class GameViewModel @Inject constructor(
 
     fun getPinToolbar(): LiveData<Boolean> = pinToolbar
 
-    fun getAppTheme(): String {
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication())
-        return sharedPreferences.getString("app_theme", ThemeHelper.DEFAULT_MODE)
-            ?: ThemeHelper.DEFAULT_MODE
-    }
+    fun getAppTheme(): String = preferences.theme
 
     fun setAppTheme(theme: String) {
         themeHelper.applyTheme(theme)
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication())
-        sharedPreferences.edit().putString("app_theme", theme).apply()
+        preferences.theme = theme
     }
 
     override fun onCleared() {

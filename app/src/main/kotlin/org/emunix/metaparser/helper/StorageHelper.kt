@@ -72,7 +72,7 @@ class StorageHelper @Inject constructor(
 
                 copyAsset("metaparser.lua", getSteadDirectory())
 
-                appVersionHelper.saveCurrentAppVersion(appVersionHelper.getVersionCode())
+                appVersionHelper.saveCurrentAppVersion()
             }
         }
     }
