@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="metaparser/app" />
-      <module fileurl="file://$PROJECT_DIR$/metaparser.iml" filepath="$PROJECT_DIR$/metaparser.iml" group="metaparser" />
+      <module fileurl="file://$PROJECT_DIR$/metaparser.iml" filepath="$PROJECT_DIR$/metaparser.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/metaparser.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/metaparser.app.iml" />
     </modules>
   </component>
 </project>
