@@ -22,7 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GameViewModel @Inject constructor(
-    private val game: EngineInteractor,
+    private val engine: EngineInteractor,
     private val tagParser: TagParser,
     private val storage: Storage,
     private val accessibilityHelper: AccessibilityHelper,
@@ -94,8 +94,8 @@ class GameViewModel @Inject constructor(
             }
 
             try {
-                game.init()
-                loadGame()
+                engine.init()
+                startGame()
                 isHasBeenInitialized = true
             } catch (e: EngineException) {
                 _fatalError.value = e.message
@@ -112,9 +112,9 @@ class GameViewModel @Inject constructor(
         _history.value = historyBlocks
     }
 
-    private fun loadGame() = viewModelScope.launch {
+    private fun startGame() = viewModelScope.launch {
         try {
-            val response = game.load()
+            val response = engine.startGame()
             showTextBlock("", response)
         } catch (e: EngineException) {
             _fatalError.value = e.message
@@ -124,9 +124,9 @@ class GameViewModel @Inject constructor(
     fun saveState(name: String? = null) = viewModelScope.launch {
         try {
             if (name.isNullOrBlank())
-                game.save()
+                engine.saveGame()
             else {
-                game.save(name)
+                engine.saveGame(name)
                 _message.value = ConsumableEvent(resources.getString(R.string.game_saved))
             }
         } catch (e: EngineException) {
@@ -136,10 +136,10 @@ class GameViewModel @Inject constructor(
 
     fun loadState(name: String) = viewModelScope.launch {
         historyBlocks.clear()
-        game.done()
+        engine.done()
         try {
-            game.init()
-            val response = game.load(name)
+            engine.init()
+            val response = engine.loadGame(name)
             _message.value = ConsumableEvent(resources.getString(R.string.game_loaded))
             showTextBlock("", response)
         } catch (e: EngineException) {
@@ -158,10 +158,10 @@ class GameViewModel @Inject constructor(
                 ConsumableEvent(resources.getString(R.string.error_delete_autosave_failed))
         historyBlocks.clear()
         _history.value = historyBlocks
-        game.done()
+        engine.done()
         try {
-            game.init()
-            loadGame()
+            engine.init()
+            startGame()
         } catch (e: EngineException) {
             _fatalError.value = e.message
         }
@@ -171,17 +171,17 @@ class GameViewModel @Inject constructor(
         val text = s.replace("\"", "")
 
         try {
-            val response = game.send(text)
+            val response = engine.processUserInput(text)
             showTextBlock("> $text", response)
-            if (game.isRestartFromGame()) {
+            if (engine.isRestartFromGame()) {
                 restartGame()
                 return@launch
             }
-            if (game.isSaveFromGame()) {
+            if (engine.isSaveFromGame()) {
                 _showSaveMenu.value = ConsumableEvent(Unit)
                 return@launch
             }
-            if (game.isLoadFromGame()) {
+            if (engine.isLoadFromGame()) {
                 _showLoadMenu.value = ConsumableEvent(Unit)
                 return@launch
             }
@@ -193,8 +193,8 @@ class GameViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         viewModelScope.launch {
-            game.save()
-            game.done()
+            engine.saveGame()
+            engine.done()
         }
     }
 }

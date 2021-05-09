@@ -12,7 +12,6 @@ import org.emunix.metaparser.storage.Storage
 import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
-import kotlin.jvm.Throws
 
 class MetaparserInteractor @Inject constructor(
     val storage: Storage
@@ -68,22 +67,7 @@ class MetaparserInteractor @Inject constructor(
     }
 
     @Throws(EngineException::class)
-    override suspend fun send(text: String): String = withContext(Dispatchers.IO) {
-        return@withContext command("@metaparser \"$text\"")
-    }
-
-    @Throws(EngineException::class)
-    override suspend fun save(): String = withContext(Dispatchers.IO) {
-        return@withContext command("save ../autosave")
-    }
-
-    @Throws(EngineException::class)
-    override suspend fun save(name: String): String = withContext(Dispatchers.IO) {
-        return@withContext command("save ../$name")
-    }
-
-    @Throws(EngineException::class)
-    override suspend fun load(): String = withContext(Dispatchers.IO) {
+    override suspend fun startGame(): String = withContext(Dispatchers.IO) {
         val autosave = File(storage.getAppFilesDirectory(), "autosave")
         return@withContext if (autosave.exists()) {
             command("load ../autosave")
@@ -93,7 +77,20 @@ class MetaparserInteractor @Inject constructor(
     }
 
     @Throws(EngineException::class)
-    override suspend fun load(name: String): String = withContext(Dispatchers.IO) {
+    override suspend fun processUserInput(text: String): String = withContext(Dispatchers.IO) {
+        return@withContext command("@metaparser \"$text\"")
+    }
+
+    @Throws(EngineException::class)
+    override suspend fun saveGame(name: String?): String = withContext(Dispatchers.IO) {
+        return@withContext if (name.isNullOrBlank())
+            command("save ../autosave")
+        else
+            command("save ../$name")
+    }
+
+    @Throws(EngineException::class)
+    override suspend fun loadGame(name: String): String = withContext(Dispatchers.IO) {
         return@withContext command("load ../$name")
     }
 

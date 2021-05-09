@@ -20,32 +20,6 @@ interface EngineInteractor {
     suspend fun done()
 
     /**
-     * Send user input to engine.
-     *
-     * @param text user entered text
-     * @return the engine response
-     * @throws EngineException when engine returns error
-     */
-    suspend fun send(text: String): String
-
-    /**
-     * Save game to autosave slot
-     *
-     * @return the engine response
-     * @throws EngineException when engine returns error
-     */
-    suspend fun save(): String
-
-    /**
-     * Save the game to the slot with the specified name
-     *
-     * @param name save state name
-     * @return the engine response
-     * @throws EngineException when engine returns error
-     */
-    suspend fun save(name: String): String
-
-    /**
      * Initial loading of the game.
      *
      * If there is an autosave, then it will be loaded,
@@ -54,7 +28,26 @@ interface EngineInteractor {
      * @return the engine response
      * @throws EngineException when engine returns error
      */
-    suspend fun load(): String
+    suspend fun startGame(): String
+
+    /**
+     * Send user input to engine.
+     *
+     * @param text user entered text
+     * @return the engine response
+     * @throws EngineException when engine returns error
+     */
+    suspend fun processUserInput(text: String): String
+
+    /**
+     * Save the game to the slot with the specified name.
+     * The game is saved to 'autosave' file if the name is null or blank.
+     *
+     * @param name save state name
+     * @return the engine response
+     * @throws EngineException when engine returns error
+     */
+    suspend fun saveGame(name: String? = null): String
 
     /**
      * Load game from save state
@@ -63,7 +56,7 @@ interface EngineInteractor {
      * @return the engine response
      * @throws EngineException when engine returns error
      */
-    suspend fun load(name: String): String
+    suspend fun loadGame(name: String): String
 
     /**
      * Find out if the user entered 'restart' command
