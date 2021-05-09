@@ -23,8 +23,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_main.*
 import org.emunix.metaparser.R
+import org.emunix.metaparser.databinding.ActivityMainBinding
 import org.emunix.metaparser.helper.ThemeHelper
 import org.emunix.metaparser.helper.showToast
 import org.emunix.metaparser.helper.visible
@@ -42,6 +42,7 @@ class GameActivity : AppCompatActivity() {
 
     private val viewModel by viewModels<GameViewModel>()
 
+    private lateinit var binding: ActivityMainBinding
     private lateinit var listAdapter: GameAdapter
     private lateinit var newGameDialogListener: NewGameDialogListener
 
@@ -50,33 +51,34 @@ class GameActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
 
-        appbar.setExpanded(false)
+        binding.appbar.setExpanded(false)
 
         val layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         layoutManager.stackFromEnd = true
-        recyclerView.layoutManager = layoutManager
+        binding.recyclerView.layoutManager = layoutManager
         listAdapter = GameAdapter()
-        recyclerView.adapter = listAdapter
+        binding.recyclerView.adapter = listAdapter
 
         viewModel.progress.observe(this, { showProgressState ->
-            progressBar.visible(showProgressState)
-            recyclerView.visible(!showProgressState)
-            editText.visible(!showProgressState)
-            enterButton.visible(!showProgressState)
-            errorMessage.visible(false)
+            binding.progressBar.visible(showProgressState)
+            binding.recyclerView.visible(!showProgressState)
+            binding.editText.visible(!showProgressState)
+            binding.enterButton.visible(!showProgressState)
+            binding.errorMessage.visible(false)
             setVoiceButtonVisibility(!showProgressState)
         })
 
         viewModel.fatalError.observe(this, { message ->
-            errorMessage.text = getString(R.string.critical_error, message)
-            progressBar.visible(false)
-            recyclerView.visible(false)
-            editText.visible(false)
-            enterButton.visible(false)
-            errorMessage.visible(true)
+            binding.errorMessage.text = getString(R.string.critical_error, message)
+            binding.progressBar.visible(false)
+            binding.recyclerView.visible(false)
+            binding.editText.visible(false)
+            binding.enterButton.visible(false)
+            binding.errorMessage.visible(true)
             setVoiceButtonVisibility(false)
         })
 
@@ -97,18 +99,18 @@ class GameActivity : AppCompatActivity() {
             }
         })
 
-        editText.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
+        binding.editText.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
-                val text = editText.text.toString()
+                val text = binding.editText.text.toString()
                 viewModel.sendTextToGame(text)
-                editText.text?.clear()
+                binding.editText.text?.clear()
                 return@OnKeyListener true
             }
             false
         })
 
         viewModel.pinToolbar.observe(this, { pin ->
-            val params = toolbar.layoutParams as AppBarLayout.LayoutParams
+            val params = binding.toolbar.layoutParams as AppBarLayout.LayoutParams
             if (pin)
                 params.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_NO_SCROLL
             else
@@ -139,12 +141,12 @@ class GameActivity : AppCompatActivity() {
             }
         }
 
-        enterButton.setOnClickListener {
-            editText.dispatchKeyEvent(KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER, 0))
-            editText.dispatchKeyEvent(KeyEvent(0, 0, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER, 0))
+        binding.enterButton.setOnClickListener {
+            binding.editText.dispatchKeyEvent(KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER, 0))
+            binding.editText.dispatchKeyEvent(KeyEvent(0, 0, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER, 0))
         }
 
-        voiceButton.setOnClickListener {
+        binding.voiceButton.setOnClickListener {
             val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
             intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, "ru-RU")
 
@@ -168,7 +170,7 @@ class GameActivity : AppCompatActivity() {
             if (resultCode == Activity.RESULT_OK && data != null) {
                 val result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
                 if (result != null && result[0] != null)
-                    editText.append(result[0])
+                    binding.editText.append(result[0])
             }
         }
     }
@@ -214,7 +216,7 @@ class GameActivity : AppCompatActivity() {
             R.id.action_show_voice_button -> {
                 item.isChecked = !item.isChecked
                 preferences.showVoiceButton = item.isChecked
-                voiceButton.visible(preferences.showVoiceButton)
+                binding.voiceButton.visible(preferences.showVoiceButton)
             }
             else -> return super.onOptionsItemSelected(item)
         }
@@ -276,8 +278,8 @@ class GameActivity : AppCompatActivity() {
 
     private fun setVoiceButtonVisibility(state: Boolean) {
         if (preferences.showVoiceButton and state)
-            voiceButton.visible(true)
+            binding.voiceButton.visible(true)
         else
-            voiceButton.visible(false)
+            binding.voiceButton.visible(false)
     }
 }
