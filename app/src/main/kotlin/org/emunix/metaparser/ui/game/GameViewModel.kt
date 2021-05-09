@@ -14,7 +14,6 @@ import org.emunix.metaparser.*
 import org.emunix.metaparser.helper.*
 import org.emunix.metaparser.interactor.engine.EngineException
 import org.emunix.metaparser.interactor.engine.EngineInteractor
-import org.emunix.metaparser.preferences.ApplicationPreferences
 import org.emunix.metaparser.storage.Storage
 import java.io.File
 import java.io.IOException
@@ -26,8 +25,6 @@ class GameViewModel @Inject constructor(
     private val tagParser: TagParser,
     private val storage: Storage,
     private val accessibilityHelper: AccessibilityHelper,
-    private val themeHelper: ThemeHelper,
-    private val preferences: ApplicationPreferences,
     private val resources: ResourceProvider
 ) : ViewModel() {
 
@@ -67,13 +64,6 @@ class GameViewModel @Inject constructor(
     private val _pinToolbar = MutableLiveData<Boolean>()
     val pinToolbar: LiveData<Boolean>
         get() = _pinToolbar
-
-    var appTheme: String
-        get() = preferences.theme
-        set(value) {
-            themeHelper.applyTheme(value)
-            preferences.theme = value
-        }
 
     /** prevents reinitialization when re-creating an activity **/
     private var isHasBeenInitialized = false

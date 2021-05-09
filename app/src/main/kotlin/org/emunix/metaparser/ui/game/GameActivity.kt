@@ -46,6 +46,7 @@ class GameActivity : AppCompatActivity() {
     private lateinit var newGameDialogListener: NewGameDialogListener
 
     @Inject lateinit var preferences: ApplicationPreferences
+    @Inject lateinit var themeHelper: ThemeHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -175,7 +176,7 @@ class GameActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
 
-        when (viewModel.appTheme) {
+        when (preferences.theme) {
             ThemeHelper.LIGHT_MODE -> menu.findItem(R.id.theme_light).isChecked = true
             ThemeHelper.DARK_MODE -> menu.findItem(R.id.theme_dark).isChecked = true
             ThemeHelper.DEFAULT_MODE -> menu.findItem(R.id.theme_default).isChecked = true
@@ -199,15 +200,15 @@ class GameActivity : AppCompatActivity() {
                 showLoadMenu()
             }
             R.id.theme_light -> {
-                viewModel.appTheme = ThemeHelper.LIGHT_MODE
+                setTheme(ThemeHelper.LIGHT_MODE)
                 item.isChecked = true
             }
             R.id.theme_dark -> {
-                viewModel.appTheme = ThemeHelper.DARK_MODE
+                setTheme(ThemeHelper.DARK_MODE)
                 item.isChecked = true
             }
             R.id.theme_default -> {
-                viewModel.appTheme = ThemeHelper.DEFAULT_MODE
+                setTheme(ThemeHelper.DEFAULT_MODE)
                 item.isChecked = true
             }
             R.id.action_show_voice_button -> {
@@ -266,6 +267,11 @@ class GameActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         viewModel.saveState()
+    }
+
+    private fun setTheme(theme: String) {
+        preferences.theme = theme
+        themeHelper.applyTheme(theme)
     }
 
     private fun setVoiceButtonVisibility(state: Boolean) {
