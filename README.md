@@ -60,6 +60,8 @@ end
 
 Что бы установить другой шрифт для текста вам необходимо заменить ttf файлы шрифтов в директории `app/src/main/res/font/`.
 
+Что бы изменить количество слотов для сохранений поменяйте параметр `NUMBER_OF_SAVE_STATES` в файле `app/src/main/kotlin/org/emunix/metaparser/storage/StorageImpl.kt`. 
+
 ### Установите Android SDK и NDK
 
 Для сборки приложения вам необходимо скачать [Android SDK](https://developer.android.com/studio#downloads) и [Android NDK](https://developer.android.com/ndk/downloads)(для сборки из консоли), либо [Android Studio](https://developer.android.com/studio)(для любителей GUI).
