@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2019, 2021 Boris Timofeev <btimofeev@emunix.org>
+ * Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).
+ */
+
 package org.emunix.metaparser.storage
 
 import android.content.Context
@@ -16,7 +21,6 @@ import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.collections.HashMap
-import kotlin.jvm.Throws
 
 @Singleton
 class StorageImpl @Inject constructor(
