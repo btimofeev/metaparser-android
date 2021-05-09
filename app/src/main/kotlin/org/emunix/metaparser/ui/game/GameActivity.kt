@@ -14,6 +14,7 @@ import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
@@ -70,6 +71,12 @@ class GameActivity : AppCompatActivity() {
             editText.visible(false)
             voiceButton.visible(false)
             errorMessage.visible(true)
+        })
+
+        viewModel.message.observe(this, { message ->
+            message.getContentIfNotHandled()?.let { text ->
+                Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+            }
         })
 
         viewModel.getHistory().observe(this, { history ->

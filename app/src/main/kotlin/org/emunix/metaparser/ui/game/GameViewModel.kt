@@ -6,20 +6,15 @@
 
 package org.emunix.metaparser.ui.game
 
-import android.app.Application
 import android.text.Spanned
-import android.widget.Toast
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import org.apache.commons.io.FileUtils
 import org.emunix.metaparser.*
 import org.emunix.metaparser.helper.*
-import org.emunix.metaparser.interactor.engine.EngineInteractor
 import org.emunix.metaparser.interactor.engine.EngineException
+import org.emunix.metaparser.interactor.engine.EngineInteractor
 import org.emunix.metaparser.preferences.ApplicationPreferences
 import org.emunix.metaparser.storage.Storage
 import java.io.File
@@ -28,14 +23,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GameViewModel @Inject constructor(
-    val game: EngineInteractor,
-    val tagParser: TagParser,
-    val storage: Storage,
-    val accessibilityHelper: AccessibilityHelper,
-    val themeHelper: ThemeHelper,
-    val preferences: ApplicationPreferences,
-    application: Application
-) : AndroidViewModel(application) {
+    private val game: EngineInteractor,
+    private val tagParser: TagParser,
+    private val storage: Storage,
+    private val accessibilityHelper: AccessibilityHelper,
+    private val themeHelper: ThemeHelper,
+    private val preferences: ApplicationPreferences,
+    private val resources: ResourceProvider
+) : ViewModel() {
 
     private val history = arrayListOf<Paragraph>()
     private val historyLiveData = MutableLiveData<ArrayList<Paragraph>>()
@@ -44,6 +39,10 @@ class GameViewModel @Inject constructor(
     private val showSaveMenu = MutableLiveData<Boolean>()
     private val showLoadMenu = MutableLiveData<Boolean>()
     private val pinToolbar = MutableLiveData<Boolean>()
+
+    private val _message = MutableLiveData<ConsumableEvent<String>>()
+    val message: LiveData<ConsumableEvent<String>>
+        get() = _message
 
     private var isInit = false
 
@@ -96,7 +95,7 @@ class GameViewModel @Inject constructor(
                 game.save()
             else {
                 game.save(name)
-                getApplication<Metaparser>().showToast(R.string.game_saved, Toast.LENGTH_SHORT)
+                _message.value = ConsumableEvent(resources.getString(R.string.game_saved))
             }
         } catch (e: EngineException) {
             showCriticalError.value = e.message
@@ -109,7 +108,7 @@ class GameViewModel @Inject constructor(
         try {
             game.init()
             val response = game.load(name)
-            getApplication<Metaparser>().showToast(R.string.game_loaded, Toast.LENGTH_SHORT)
+            _message.value = ConsumableEvent(resources.getString(R.string.game_loaded))
             showTextBlock("", response)
         } catch (e: EngineException) {
             showCriticalError.value = e.message
@@ -123,7 +122,8 @@ class GameViewModel @Inject constructor(
     fun restartGame() = viewModelScope.launch {
         val autosave = File(storage.getAppFilesDirectory(), "autosave")
         if (autosave.exists() && !FileUtils.deleteQuietly(autosave))
-            getApplication<Metaparser>().showToast(R.string.error_delete_autosave_failed)
+            _message.value =
+                ConsumableEvent(resources.getString(R.string.error_delete_autosave_failed))
         history.clear()
         historyLiveData.value = history
         game.done()
