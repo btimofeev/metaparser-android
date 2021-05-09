@@ -91,7 +91,6 @@
         android:layout_width="40dp"
         android:layout_height="48dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="@dimen/text_margin_end"
         android:contentDescription="@string/activity_game_voice_button_accessibility"
         app:icon="@drawable/microphone"
         app:iconPadding="0dp"
@@ -101,7 +100,26 @@
         style="@style/Widget.MaterialComponents.Button.TextButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/editText"
+        app:layout_constraintEnd_toStartOf="@id/enterButton"
+        app:layout_constraintTop_toBottomOf="@+id/coordinator"
+        app:layout_constraintVertical_bias="0.50" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/enterButton"
+        android:layout_width="40dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="@string/activity_game_send_button_accessibility"
+        app:icon="@drawable/send"
+        app:iconPadding="0dp"
+        app:iconGravity="textStart"
+        app:iconTint="@color/enterButtonTint"
+        android:visibility="gone"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/voiceButton"
         app:layout_constraintTop_toBottomOf="@+id/coordinator"
         app:layout_constraintVertical_bias="0.50" />
 

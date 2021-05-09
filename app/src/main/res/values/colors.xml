@@ -12,4 +12,5 @@
     <color name="colorOnSurface">#050505</color>       <!--цвет текста для диалога-->
 
     <color name="voiceButtonTint">#E91E63</color>      <!--цвет значка на кнопке голосового ввода-->
+    <color name="enterButtonTint">#E91E63</color>      <!--цвет значка на кнопке enter-->
 </resources>

@@ -61,6 +61,7 @@ class GameActivity : AppCompatActivity() {
             recyclerView.visible(!showProgressState)
             editText.visible(!showProgressState)
             voiceButton.visible(!showProgressState)
+            enterButton.visible(!showProgressState)
             errorMessage.visible(false)
         })
 
@@ -70,6 +71,7 @@ class GameActivity : AppCompatActivity() {
             recyclerView.visible(false)
             editText.visible(false)
             voiceButton.visible(false)
+            enterButton.visible(false)
             errorMessage.visible(true)
         })
 
@@ -132,6 +134,11 @@ class GameActivity : AppCompatActivity() {
             }
         }
 
+        enterButton.setOnClickListener {
+            editText.dispatchKeyEvent(KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER, 0))
+            editText.dispatchKeyEvent(KeyEvent(0, 0, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER, 0))
+        }
+
         voiceButton.setOnClickListener {
             val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
             intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, "ru-RU")
@@ -156,7 +163,7 @@ class GameActivity : AppCompatActivity() {
             if (resultCode == Activity.RESULT_OK && data != null) {
                 val result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
                 if (result != null && result[0] != null)
-                    viewModel.sendTextToGame(result[0])
+                    editText.append(result[0])
             }
         }
     }
