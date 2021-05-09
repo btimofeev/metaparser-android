@@ -12,6 +12,8 @@ import kotlinx.coroutines.*
 import org.apache.commons.io.FileUtils
 import org.emunix.metaparser.*
 import org.emunix.metaparser.helper.*
+import org.emunix.metaparser.interactor.engine.EngineInteractor
+import org.emunix.metaparser.interactor.engine.EngineException
 import org.emunix.metaparser.preferences.ApplicationPreferences
 import org.emunix.metaparser.storage.Storage
 import java.io.File
@@ -20,7 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GameViewModel @Inject constructor(
-    val game: Game,
+    val game: EngineInteractor,
     val tagParser: TagParser,
     val storage: Storage,
     val accessibilityHelper: AccessibilityHelper,
@@ -58,7 +60,7 @@ class GameViewModel @Inject constructor(
                 game.init()
                 loadGame()
                 isInit = true
-            } catch (e: MetaparserException) {
+            } catch (e: EngineException) {
                 showCriticalError.value = e.message
             }
         }
@@ -77,7 +79,7 @@ class GameViewModel @Inject constructor(
         try {
             val response = game.load()
             showTextBlock("", response)
-        } catch (e: MetaparserException) {
+        } catch (e: EngineException) {
             showCriticalError.value = e.message
         }
     }
@@ -90,7 +92,7 @@ class GameViewModel @Inject constructor(
                 game.save(name)
                 getApplication<Metaparser>().showToast(R.string.game_saved, Toast.LENGTH_SHORT)
             }
-        } catch (e: MetaparserException) {
+        } catch (e: EngineException) {
             showCriticalError.value = e.message
         }
     }
@@ -103,7 +105,7 @@ class GameViewModel @Inject constructor(
             val response = game.load(name)
             getApplication<Metaparser>().showToast(R.string.game_loaded, Toast.LENGTH_SHORT)
             showTextBlock("", response)
-        } catch (e: MetaparserException) {
+        } catch (e: EngineException) {
             showCriticalError.value = e.message
         }
     }
@@ -122,7 +124,7 @@ class GameViewModel @Inject constructor(
         try {
             game.init()
             loadGame()
-        } catch (e: MetaparserException) {
+        } catch (e: EngineException) {
             showCriticalError.value = e.message
         }
     }
@@ -147,7 +149,7 @@ class GameViewModel @Inject constructor(
                 showLoadMenu.value = false
                 return@launch
             }
-        } catch (e: MetaparserException) {
+        } catch (e: EngineException) {
             showCriticalError.value = e.message
         }
     }
@@ -170,6 +172,7 @@ class GameViewModel @Inject constructor(
         themeHelper.applyTheme(theme)
         preferences.theme = theme
     }
+
 
     override fun onCleared() {
         viewModelScope.launch {
