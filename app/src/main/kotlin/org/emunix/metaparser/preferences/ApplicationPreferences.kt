@@ -16,4 +16,9 @@ interface ApplicationPreferences {
      * Application version (to check if the app has been updated)
      */
     var appVersion: Long
+
+    /**
+     * Setting the display of the voice input button
+     */
+    var showVoiceButton: Boolean
 }

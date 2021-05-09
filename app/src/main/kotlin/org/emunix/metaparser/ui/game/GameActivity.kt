@@ -28,9 +28,11 @@ import org.emunix.metaparser.R
 import org.emunix.metaparser.helper.ThemeHelper
 import org.emunix.metaparser.helper.showToast
 import org.emunix.metaparser.helper.visible
+import org.emunix.metaparser.preferences.ApplicationPreferences
 import org.emunix.metaparser.ui.dialog.NewGameDialog
 import org.emunix.metaparser.ui.dialog.NewGameDialogListener
 import org.emunix.metaparser.ui.view.TopSmoothScroller
+import javax.inject.Inject
 
 
 const val REQUEST_SPEECH_TO_TEXT = 1001
@@ -42,6 +44,8 @@ class GameActivity : AppCompatActivity() {
 
     private lateinit var listAdapter: GameAdapter
     private lateinit var newGameDialogListener: NewGameDialogListener
+
+    @Inject lateinit var preferences: ApplicationPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,9 +64,9 @@ class GameActivity : AppCompatActivity() {
             progressBar.visible(showProgressState)
             recyclerView.visible(!showProgressState)
             editText.visible(!showProgressState)
-            voiceButton.visible(!showProgressState)
             enterButton.visible(!showProgressState)
             errorMessage.visible(false)
+            setVoiceButtonVisibility(!showProgressState)
         })
 
         viewModel.fatalError.observe(this, { message ->
@@ -70,9 +74,9 @@ class GameActivity : AppCompatActivity() {
             progressBar.visible(false)
             recyclerView.visible(false)
             editText.visible(false)
-            voiceButton.visible(false)
             enterButton.visible(false)
             errorMessage.visible(true)
+            setVoiceButtonVisibility(false)
         })
 
         viewModel.message.observe(this, { message ->
@@ -176,6 +180,9 @@ class GameActivity : AppCompatActivity() {
             ThemeHelper.DARK_MODE -> menu.findItem(R.id.theme_dark).isChecked = true
             ThemeHelper.DEFAULT_MODE -> menu.findItem(R.id.theme_default).isChecked = true
         }
+
+        menu.findItem(R.id.action_show_voice_button).isChecked = preferences.showVoiceButton
+
         return true
     }
 
@@ -202,6 +209,11 @@ class GameActivity : AppCompatActivity() {
             R.id.theme_default -> {
                 viewModel.appTheme = ThemeHelper.DEFAULT_MODE
                 item.isChecked = true
+            }
+            R.id.action_show_voice_button -> {
+                item.isChecked = !item.isChecked
+                preferences.showVoiceButton = item.isChecked
+                voiceButton.visible(preferences.showVoiceButton)
             }
             else -> return super.onOptionsItemSelected(item)
         }
@@ -254,5 +266,12 @@ class GameActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         viewModel.saveState()
+    }
+
+    private fun setVoiceButtonVisibility(state: Boolean) {
+        if (preferences.showVoiceButton and state)
+            voiceButton.visible(true)
+        else
+            voiceButton.visible(false)
     }
 }

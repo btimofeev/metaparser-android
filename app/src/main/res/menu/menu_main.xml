@@ -1,30 +1,29 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="org.emunix.metaparser.ui.game.GameActivity" >
-    <item android:id="@+id/action_new_game"
-        android:title="@string/action_new_game"
+    tools:context="org.emunix.metaparser.ui.game.GameActivity">
+    <item
+        android:id="@+id/action_new_game"
         android:orderInCategory="100"
+        android:title="@string/action_new_game"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_save_game"
-        android:title="@string/action_save_game"
         android:orderInCategory="120"
-        app:showAsAction="never">
-    </item>
+        android:title="@string/action_save_game"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_load_game"
-        android:title="@string/action_load_game"
         android:orderInCategory="140"
-        app:showAsAction="never">
-    </item>
+        android:title="@string/action_load_game"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/theme"
-        android:title="@string/action_theme"
         android:orderInCategory="200"
+        android:title="@string/action_theme"
         app:showAsAction="never">
 
         <menu>
@@ -41,4 +40,11 @@
             </group>
         </menu>
     </item>
+
+    <item
+        android:id="@+id/action_show_voice_button"
+        android:orderInCategory="220"
+        android:checkable="true"
+        android:title="@string/action_show_voice_button" />
+
 </menu>

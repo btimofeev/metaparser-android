@@ -31,6 +31,12 @@ class ApplicationPreferencesImpl @Inject constructor(
             putLong(PREF_APP_VERSION, value)
         }
 
+    override var showVoiceButton: Boolean
+        get() = preferences.getBoolean(PREF_SHOW_VOICE_BUTTON, true)
+        set(value) = preferences.edit {
+            putBoolean(PREF_SHOW_VOICE_BUTTON, value)
+        }
+
     companion object {
 
         /** the name of the application theme setting **/
@@ -47,5 +53,10 @@ class ApplicationPreferencesImpl @Inject constructor(
          * in which the game resources were last copied from APK to filesystem
          */
         private const val PREF_APP_VERSION = "app_version"
+
+        /**
+         * Show voice input button
+         */
+        private const val PREF_SHOW_VOICE_BUTTON = "show_voice_button"
     }
 }
