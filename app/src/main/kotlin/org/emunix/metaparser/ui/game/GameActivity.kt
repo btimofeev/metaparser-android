@@ -17,7 +17,6 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
@@ -56,7 +55,7 @@ class GameActivity : AppCompatActivity() {
         listAdapter = GameAdapter()
         recyclerView.adapter = listAdapter
 
-        viewModel.getShowProgressState().observe(this, Observer { showProgressState ->
+        viewModel.getShowProgressState().observe(this, { showProgressState ->
             progressBar.visible(showProgressState)
             recyclerView.visible(!showProgressState)
             editText.visible(!showProgressState)
@@ -64,7 +63,7 @@ class GameActivity : AppCompatActivity() {
             errorMessage.visible(false)
         })
 
-        viewModel.getShowCriticalError().observe(this, Observer { message ->
+        viewModel.getShowCriticalError().observe(this, { message ->
             errorMessage.text = getString(R.string.critical_error, message)
             progressBar.visible(false)
             recyclerView.visible(false)
@@ -73,7 +72,7 @@ class GameActivity : AppCompatActivity() {
             errorMessage.visible(true)
         })
 
-        viewModel.getHistory().observe(this, Observer { history ->
+        viewModel.getHistory().observe(this, { history ->
             listAdapter.setItems(history)
             listAdapter.notifyDataSetChanged()
             val smoothScroller = TopSmoothScroller(this)
@@ -94,7 +93,7 @@ class GameActivity : AppCompatActivity() {
             false
         })
 
-        viewModel.getPinToolbar().observe(this, Observer { pin ->
+        viewModel.getPinToolbar().observe(this, { pin ->
             val params = toolbar.layoutParams as AppBarLayout.LayoutParams
             if (pin)
                 params.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_NO_SCROLL
@@ -102,13 +101,13 @@ class GameActivity : AppCompatActivity() {
                 params.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
         })
 
-        viewModel.getShowSaveMenu().observe(this, Observer { trigger ->
+        viewModel.getShowSaveMenu().observe(this, { trigger ->
             if(trigger) {
                 showSaveMenu()
             }
         })
 
-        viewModel.getShowLoadMenu().observe(this, Observer { trigger ->
+        viewModel.getShowLoadMenu().observe(this, { trigger ->
             if(trigger) {
                 showLoadMenu()
             }
@@ -195,7 +194,7 @@ class GameActivity : AppCompatActivity() {
         return true
     }
 
-    fun showSaveMenu() {
+    private fun showSaveMenu() {
         val saves = viewModel.getSaveStates()
         val items = mutableListOf<String>()
         for ((key, value) in saves) {
@@ -212,7 +211,7 @@ class GameActivity : AppCompatActivity() {
             .show()
     }
 
-    fun showLoadMenu() {
+    private fun showLoadMenu() {
         val saves = viewModel.getSaveStates()
         val items = mutableListOf<String>()
         val mapDialogItemToSave = mutableMapOf<Int, Int>()

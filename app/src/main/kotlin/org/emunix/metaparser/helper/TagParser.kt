@@ -28,7 +28,7 @@ import javax.inject.Singleton
 
 @Singleton
 class TagParser @Inject constructor() : DefaultHandler() {
-    private val reader: XMLReader = org.ccil.cowan.tagsoup.Parser();
+    private val reader: XMLReader = org.ccil.cowan.tagsoup.Parser()
     private lateinit var spannableStringBuilder: SpannableStringBuilder
 
     init {
@@ -96,16 +96,16 @@ class TagParser @Inject constructor() : DefaultHandler() {
         }
     }
 
-    private fun <T> getLast(text: Spanned, kind: Class<*>): Any? {
+    private fun getLast(text: Spanned, kind: Class<*>): Any? {
         /*
         * This knows that the last returned object from getSpans()
         * will be the most recently added.
         */
-        val objs = text.getSpans(0, text.length, kind)
-        return if (objs.isEmpty()) {
+        val objects = text.getSpans(0, text.length, kind)
+        return if (objects.isEmpty()) {
             null
         } else {
-            objs[objs.size - 1]
+            objects[objects.size - 1]
         }
     }
 
@@ -127,7 +127,7 @@ class TagParser @Inject constructor() : DefaultHandler() {
 
     private fun end(text: Editable, kind: Class<*>, repl: Any) {
         val len = text.length
-        val obj = getLast<Any>(text, kind)
+        val obj = getLast(text, kind)
         obj?.let { setSpanFromMark(text, it, repl) }
     }
 

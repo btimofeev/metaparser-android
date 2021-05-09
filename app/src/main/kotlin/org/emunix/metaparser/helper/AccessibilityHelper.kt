@@ -34,24 +34,21 @@ class AccessibilityHelper @Inject constructor(@ApplicationContext val context: C
         return spannable
     }
 
-    fun getSpannedCommand(command: String): Spanned {
-        val spannedCommand: Spanned
+    fun getSpannedCommand(command: String): Spanned =
         if (command.isNotEmpty() && command[0] == '>') {
             if (command.length > 1) {
-                val rem = command.subSequence(1, command.length)
-                if (rem.isNotBlank()) {
-                    spannedCommand = wrapForTts(command, 0, 1,
-                        context.getString(R.string.span_command_accessibility))
+                if (command.subSequence(1, command.length).isNotBlank()) {
+                    wrapForTts(
+                        command, 0, 1,
+                        context.getString(R.string.span_command_accessibility)
+                    )
                 } else {
-                    spannedCommand = wrapForTts(command, 0, 1, "")
+                    wrapForTts(command, 0, 1, "")
                 }
             } else {
-                spannedCommand = wrapForTts(command, 0, 1, "")
+                wrapForTts(command, 0, 1, "")
             }
         } else {
-            spannedCommand = command.toSpanned()
+            command.toSpanned()
         }
-
-        return spannedCommand
-    }
 }
