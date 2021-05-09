@@ -56,7 +56,7 @@ class GameActivity : AppCompatActivity() {
         listAdapter = GameAdapter()
         recyclerView.adapter = listAdapter
 
-        viewModel.getShowProgressState().observe(this, { showProgressState ->
+        viewModel.progress.observe(this, { showProgressState ->
             progressBar.visible(showProgressState)
             recyclerView.visible(!showProgressState)
             editText.visible(!showProgressState)
@@ -64,7 +64,7 @@ class GameActivity : AppCompatActivity() {
             errorMessage.visible(false)
         })
 
-        viewModel.getShowCriticalError().observe(this, { message ->
+        viewModel.fatalError.observe(this, { message ->
             errorMessage.text = getString(R.string.critical_error, message)
             progressBar.visible(false)
             recyclerView.visible(false)
@@ -79,7 +79,7 @@ class GameActivity : AppCompatActivity() {
             }
         })
 
-        viewModel.getHistory().observe(this, { history ->
+        viewModel.history.observe(this, { history ->
             listAdapter.setItems(history)
             listAdapter.notifyDataSetChanged()
             val smoothScroller = TopSmoothScroller(this)
@@ -100,7 +100,7 @@ class GameActivity : AppCompatActivity() {
             false
         })
 
-        viewModel.getPinToolbar().observe(this, { pin ->
+        viewModel.pinToolbar.observe(this, { pin ->
             val params = toolbar.layoutParams as AppBarLayout.LayoutParams
             if (pin)
                 params.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_NO_SCROLL
@@ -108,14 +108,14 @@ class GameActivity : AppCompatActivity() {
                 params.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
         })
 
-        viewModel.getShowSaveMenu().observe(this, { trigger ->
-            if(trigger) {
+        viewModel.showSaveMenu.observe(this, { trigger ->
+            trigger.getContentIfNotHandled()?.let {
                 showSaveMenu()
             }
         })
 
-        viewModel.getShowLoadMenu().observe(this, { trigger ->
-            if(trigger) {
+        viewModel.showLoadMenu.observe(this, { trigger ->
+            trigger.getContentIfNotHandled()?.let {
                 showLoadMenu()
             }
         })
@@ -164,7 +164,7 @@ class GameActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
 
-        when (viewModel.getAppTheme()) {
+        when (viewModel.appTheme) {
             ThemeHelper.LIGHT_MODE -> menu.findItem(R.id.theme_light).isChecked = true
             ThemeHelper.DARK_MODE -> menu.findItem(R.id.theme_dark).isChecked = true
             ThemeHelper.DEFAULT_MODE -> menu.findItem(R.id.theme_default).isChecked = true
@@ -185,15 +185,15 @@ class GameActivity : AppCompatActivity() {
                 showLoadMenu()
             }
             R.id.theme_light -> {
-                viewModel.setAppTheme(ThemeHelper.LIGHT_MODE)
+                viewModel.appTheme = ThemeHelper.LIGHT_MODE
                 item.isChecked = true
             }
             R.id.theme_dark -> {
-                viewModel.setAppTheme(ThemeHelper.DARK_MODE)
+                viewModel.appTheme = ThemeHelper.DARK_MODE
                 item.isChecked = true
             }
             R.id.theme_default -> {
-                viewModel.setAppTheme(ThemeHelper.DEFAULT_MODE)
+                viewModel.appTheme = ThemeHelper.DEFAULT_MODE
                 item.isChecked = true
             }
             else -> return super.onOptionsItemSelected(item)

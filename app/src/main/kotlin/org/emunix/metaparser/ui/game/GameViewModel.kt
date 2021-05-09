@@ -3,7 +3,6 @@
  * Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).
  */
 
-
 package org.emunix.metaparser.ui.game
 
 import android.text.Spanned
@@ -32,41 +31,74 @@ class GameViewModel @Inject constructor(
     private val resources: ResourceProvider
 ) : ViewModel() {
 
-    private val history = arrayListOf<Paragraph>()
-    private val historyLiveData = MutableLiveData<ArrayList<Paragraph>>()
-    private val showProgressState = MutableLiveData<Boolean>()
-    private val showCriticalError = MutableLiveData<String>()
-    private val showSaveMenu = MutableLiveData<Boolean>()
-    private val showLoadMenu = MutableLiveData<Boolean>()
-    private val pinToolbar = MutableLiveData<Boolean>()
+    private val historyBlocks = arrayListOf<Paragraph>()
 
+    /** blocks of text representing user input and response from the engine **/
+    private val _history = MutableLiveData<ArrayList<Paragraph>>()
+    val history: LiveData<ArrayList<Paragraph>>
+        get() = _history
+
+    /** show message to user **/
     private val _message = MutableLiveData<ConsumableEvent<String>>()
     val message: LiveData<ConsumableEvent<String>>
         get() = _message
 
-    private var isInit = false
+    /** show fatal error screen **/
+    private val _fatalError = MutableLiveData<String>()
+    val fatalError: LiveData<String>
+        get() = _fatalError
+
+    /** show/hide progress indicator **/
+    private val _progress = MutableLiveData<Boolean>()
+    val progress: LiveData<Boolean>
+        get() = _progress
+
+    /** show save menu event **/
+    private val _showSaveMenu = MutableLiveData<ConsumableEvent<Unit>>()
+    val showSaveMenu: LiveData<ConsumableEvent<Unit>>
+        get() = _showSaveMenu
+
+    /** show load menu event **/
+    private val _showLoadMenu = MutableLiveData<ConsumableEvent<Unit>>()
+    val showLoadMenu: LiveData<ConsumableEvent<Unit>>
+        get() = _showLoadMenu
+
+    /** pin/unpin toolbar **/
+    private val _pinToolbar = MutableLiveData<Boolean>()
+    val pinToolbar: LiveData<Boolean>
+        get() = _pinToolbar
+
+    var appTheme: String
+        get() = preferences.theme
+        set(value) {
+            themeHelper.applyTheme(value)
+            preferences.theme = value
+        }
+
+    /** prevents reinitialization when re-creating an activity **/
+    private var isHasBeenInitialized = false
 
     fun init() = viewModelScope.launch {
         if (accessibilityHelper.isTouchExplorationEnabled())
-            pinToolbar.value = true
+            _pinToolbar.value = true
 
-        if (!isInit) {
-            showProgressState.value = true
+        if (!isHasBeenInitialized) {
+            _progress.value = true
             try {
                 storage.copyResourcesFromApk()
             } catch (e: IOException) {
-                showCriticalError.value = "Copy error: ${e.localizedMessage}"
+                _fatalError.value = "Copy error: ${e.localizedMessage}"
                 return@launch
             } finally {
-                showProgressState.value = false
+                _progress.value = false
             }
 
             try {
                 game.init()
                 loadGame()
-                isInit = true
+                isHasBeenInitialized = true
             } catch (e: EngineException) {
-                showCriticalError.value = e.message
+                _fatalError.value = e.message
             }
         }
     }
@@ -76,8 +108,8 @@ class GameViewModel @Inject constructor(
             accessibilityHelper.getSpannedCommand(command)
         val spannedText = tagParser.parse(text)
         val paragraph = Paragraph(spannedCommand, spannedText)
-        history.add(paragraph)
-        historyLiveData.value = history
+        historyBlocks.add(paragraph)
+        _history.value = historyBlocks
     }
 
     private fun loadGame() = viewModelScope.launch {
@@ -85,7 +117,7 @@ class GameViewModel @Inject constructor(
             val response = game.load()
             showTextBlock("", response)
         } catch (e: EngineException) {
-            showCriticalError.value = e.message
+            _fatalError.value = e.message
         }
     }
 
@@ -98,12 +130,12 @@ class GameViewModel @Inject constructor(
                 _message.value = ConsumableEvent(resources.getString(R.string.game_saved))
             }
         } catch (e: EngineException) {
-            showCriticalError.value = e.message
+            _fatalError.value = e.message
         }
     }
 
     fun loadState(name: String) = viewModelScope.launch {
-        history.clear()
+        historyBlocks.clear()
         game.done()
         try {
             game.init()
@@ -111,7 +143,7 @@ class GameViewModel @Inject constructor(
             _message.value = ConsumableEvent(resources.getString(R.string.game_loaded))
             showTextBlock("", response)
         } catch (e: EngineException) {
-            showCriticalError.value = e.message
+            _fatalError.value = e.message
         }
     }
 
@@ -124,14 +156,14 @@ class GameViewModel @Inject constructor(
         if (autosave.exists() && !FileUtils.deleteQuietly(autosave))
             _message.value =
                 ConsumableEvent(resources.getString(R.string.error_delete_autosave_failed))
-        history.clear()
-        historyLiveData.value = history
+        historyBlocks.clear()
+        _history.value = historyBlocks
         game.done()
         try {
             game.init()
             loadGame()
         } catch (e: EngineException) {
-            showCriticalError.value = e.message
+            _fatalError.value = e.message
         }
     }
 
@@ -146,43 +178,21 @@ class GameViewModel @Inject constructor(
                 return@launch
             }
             if (game.isSaveFromGame()) {
-                showSaveMenu.value = true
-                showSaveMenu.value = false
+                _showSaveMenu.value = ConsumableEvent(Unit)
                 return@launch
             }
             if (game.isLoadFromGame()) {
-                showLoadMenu.value = true
-                showLoadMenu.value = false
+                _showLoadMenu.value = ConsumableEvent(Unit)
                 return@launch
             }
         } catch (e: EngineException) {
-            showCriticalError.value = e.message
+            _fatalError.value = e.message
         }
     }
 
-    fun getHistory(): LiveData<ArrayList<Paragraph>> = historyLiveData
-
-    fun getShowProgressState(): LiveData<Boolean> = showProgressState
-
-    fun getShowCriticalError(): LiveData<String> = showCriticalError
-
-    fun getShowSaveMenu(): LiveData<Boolean> = showSaveMenu
-
-    fun getShowLoadMenu(): LiveData<Boolean> = showLoadMenu
-
-    fun getPinToolbar(): LiveData<Boolean> = pinToolbar
-
-    fun getAppTheme(): String = preferences.theme
-
-    fun setAppTheme(theme: String) {
-        themeHelper.applyTheme(theme)
-        preferences.theme = theme
-    }
-
-
     override fun onCleared() {
+        super.onCleared()
         viewModelScope.launch {
-            super.onCleared()
             game.save()
             game.done()
         }
