@@ -1,6 +1,8 @@
 package org.emunix.metaparser.storage
 
 import java.io.File
+import java.io.IOException
+import kotlin.jvm.Throws
 
 interface Storage {
 
@@ -19,7 +21,10 @@ interface Storage {
      *
      * Really copied only if the application version code has increased or if we have a DEBUG build.
      * Files are copied in the IO thread.
+     *
+     * @throws [IOException] when IO error occurs
      */
+    @Throws(IOException::class)
     suspend fun copyResourcesFromApk()
 
     /**

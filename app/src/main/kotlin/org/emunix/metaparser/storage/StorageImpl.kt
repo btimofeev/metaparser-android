@@ -9,7 +9,6 @@ import kotlinx.coroutines.withContext
 import org.apache.commons.io.FileUtils
 import org.emunix.metaparser.BuildConfig
 import org.emunix.metaparser.helper.AppVersionHelper
-import org.emunix.metaparser.helper.showToast
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -17,6 +16,7 @@ import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.collections.HashMap
+import kotlin.jvm.Throws
 
 @Singleton
 class StorageImpl @Inject constructor(
@@ -34,10 +34,11 @@ class StorageImpl @Inject constructor(
                 }
             }
         }
-        // if external not presented use internal memory // todo check this
+        // if external not presented use internal memory
         return getDataDirectory()
     }
 
+    @Throws(IOException::class)
     override suspend fun copyResourcesFromApk() {
         withContext(Dispatchers.IO) {
             if (appVersionHelper.isNewAppVersion() || BuildConfig.DEBUG) {
@@ -77,22 +78,19 @@ class StorageImpl @Inject constructor(
 
     private fun getGameDirectory(): File = File(getAppFilesDirectory(), GAME_DIR_NAME)
 
+    @Throws(IOException::class)
     private fun copyAsset(name: String, toPath: File) {
         val assetManager = context.assets
-        try {
-            val assets = assetManager.list(name) ?: throw IOException("Assets not found")
+        val assets = assetManager.list(name) ?: throw IOException("Assets not found")
 
-            val dir = File(toPath, name)
-            if (assets.isEmpty()) {
-                FileUtils.copyInputStreamToFile(assetManager.open(name), dir)
-            } else {
-                FileUtils.forceMkdir(dir)
-                for (i in 0 until assets.size) {
-                    copyAsset(name + "/" + assets[i], toPath)
-                }
+        val dir = File(toPath, name)
+        if (assets.isEmpty()) {
+            FileUtils.copyInputStreamToFile(assetManager.open(name), dir)
+        } else {
+            FileUtils.forceMkdir(dir)
+            for (element in assets) {
+                copyAsset("$name/$element", toPath)
             }
-        } catch (e: IOException) {
-            context.showToast("Copy error: ${e.localizedMessage}")
         }
     }
 

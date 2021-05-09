@@ -15,6 +15,7 @@ import org.emunix.metaparser.helper.*
 import org.emunix.metaparser.preferences.ApplicationPreferences
 import org.emunix.metaparser.storage.Storage
 import java.io.File
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -44,8 +45,14 @@ class GameViewModel @Inject constructor(
 
         if (!isInit) {
             showProgressState.value = true
-            storage.copyResourcesFromApk()
-            showProgressState.value = false
+            try {
+                storage.copyResourcesFromApk()
+            } catch (e: IOException) {
+                showCriticalError.value = "Copy error: ${e.localizedMessage}"
+                return@launch
+            } finally {
+                showProgressState.value = false
+            }
 
             try {
                 game.init()
